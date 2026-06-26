@@ -96,13 +96,13 @@
 
 ---
 
-### 阶段二：后端核心功能 ⬜
+### 阶段二：后端核心功能 ✅
 
 **目标**：实现 API 调用和图片处理的核心逻辑
 
 #### 任务清单
 
-- [ ] 2.1 编写 API 配置管理 `config_manager.py`
+- [x] 2.1 编写 API 配置管理 `config_manager.py`
   ```python
   # 功能：
   # - 读取 config.json
@@ -110,7 +110,7 @@
   # - 获取当前配置
   ```
 
-- [ ] 2.2 编写 API 调用处理 `api_handler.py`
+- [x] 2.2 编写 API 调用处理 `api_handler.py`
   ```python
   # 功能：
   # - 接收 base64 图片
@@ -119,7 +119,7 @@
   # - 解析返回结果
   ```
 
-- [ ] 2.3 实现图片上传接口 `POST /api/upload`
+- [x] 2.3 实现图片上传接口 `POST /api/upload`
   ```python
   @app.route('/api/upload', methods=['POST'])
   def upload_image():
@@ -128,13 +128,13 @@
       # 返回图片路径
   ```
 
-- [ ] 2.4 实现配置接口
+- [x] 2.4 实现配置接口
   ```python
   @app.route('/api/config', methods=['GET'])    # 获取配置
   @app.route('/api/config', methods=['POST'])   # 保存配置
   ```
 
-- [ ] 2.5 实现生成漫画接口 `POST /api/generate`
+- [x] 2.5 实现生成漫画接口 `POST /api/generate`
   ```python
   @app.route('/api/generate', methods=['POST'])
   def generate_comic():
@@ -144,7 +144,7 @@
       # 返回生成的图片
   ```
 
-- [ ] 2.6 测试后端 API（用 curl 或 Postman）
+- [x] 2.6 测试后端 API（用 curl 或 Postman）
   ```bash
   # 测试配置保存
   curl -X POST http://localhost:5000/api/config \
@@ -381,7 +381,7 @@
 | 阶段 | 状态 | 开始时间 | 完成时间 | 备注 |
 |------|------|----------|----------|------|
 | 阶段一：项目初始化 | ✅ 已完成 | 2026-06-27 | 2026-06-27 | 使用 pnpm 作为包管理器 |
-| 阶段二：后端核心功能 | ⬜ 未开始 | - | - | - |
+| 阶段二：后端核心功能 | ✅ 已完成 | 2026-06-27 | 2026-06-27 | config_manager + api_handler + 4 个 API 接口 |
 | 阶段三：前端核心功能 | ⬜ 未开始 | - | - | - |
 | 阶段四：前后端联调 | ⬜ 未开始 | - | - | - |
 | 阶段五：错误处理和优化 | ⬜ 未开始 | - | - | - |
