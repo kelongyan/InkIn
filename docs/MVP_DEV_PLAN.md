@@ -34,13 +34,13 @@
 
 ## 📋 阶段划分
 
-### 阶段一：项目初始化 ⬜
+### 阶段一：项目初始化 ✅
 
 **目标**：搭建项目骨架，确保前后端能独立运行
 
 #### 任务清单
 
-- [ ] 1.1 创建后端目录结构
+- [x] 1.1 创建后端目录结构
   ```
   backend/
   ├── app.py
@@ -48,12 +48,12 @@
   └── config.json
   ```
 
-- [ ] 1.2 创建前端项目
+- [x] 1.2 创建前端项目
   ```bash
-  npm create vite@latest frontend -- --template vue
+  pnpm create vite frontend --template vue
   ```
 
-- [ ] 1.3 编写后端最小 Flask 应用
+- [x] 1.3 编写后端最小 Flask 应用
   ```python
   from flask import Flask, jsonify
   from flask_cors import CORS
@@ -69,14 +69,14 @@
       app.run(debug=True, port=5000)
   ```
 
-- [ ] 1.4 编写 `requirements.txt`
+- [x] 1.4 编写 `requirements.txt`
   ```
   flask==3.0.0
   flask-cors==4.0.0
   requests==2.31.0
   ```
 
-- [ ] 1.5 验证后端启动
+- [x] 1.5 验证后端启动
   ```bash
   cd backend
   pip install -r requirements.txt
@@ -84,12 +84,12 @@
   # 访问 http://localhost:5000/api/health 应返回 {"status": "ok"}
   ```
 
-- [ ] 1.6 验证前端启动
+- [x] 1.6 验证前端启动
   ```bash
   cd frontend
-  npm install
-  npm run dev
-  # 访问 http://localhost:5173 应看到 Vue 默认页面
+  pnpm install
+  pnpm dev
+  # 访问 http://localhost:3000 应看到 Vue 默认页面
   ```
 
 **完成标准**：前后端都能独立启动，无报错
@@ -314,20 +314,20 @@
   ```bat
   @echo off
   echo Starting InkIn...
-  
+
   echo.
   echo [1/2] Starting Backend...
   cd /d %~dp0backend
   start "InkIn Backend" cmd /k "python app.py"
-  
+
   echo [2/2] Starting Frontend...
   cd /d %~dp0frontend
-  start "InkIn Frontend" cmd /k "npm run dev"
-  
+  start "InkIn Frontend" cmd /k "pnpm dev"
+
   echo.
   echo InkIn is starting...
   echo Backend: http://localhost:5000
-  echo Frontend: http://localhost:5173
+  echo Frontend: http://localhost:3000
   echo.
   echo Press any key to exit...
   pause > nul
@@ -337,20 +337,20 @@
   ```bash
   #!/bin/bash
   echo "Starting InkIn..."
-  
+
   # 启动后端
   cd backend
   python app.py &
   BACKEND_PID=$!
-  
+
   # 启动前端
   cd ../frontend
-  npm run dev &
+  pnpm dev &
   FRONTEND_PID=$!
-  
+
   echo "InkIn is running!"
-  echo "Frontend: http://localhost:5173"
-  
+  echo "Frontend: http://localhost:3000"
+
   # 等待 Ctrl+C
   trap "kill $BACKEND_PID $FRONTEND_PID" EXIT
   wait
@@ -380,7 +380,7 @@
 
 | 阶段 | 状态 | 开始时间 | 完成时间 | 备注 |
 |------|------|----------|----------|------|
-| 阶段一：项目初始化 | ⬜ 未开始 | - | - | - |
+| 阶段一：项目初始化 | ✅ 已完成 | 2026-06-27 | 2026-06-27 | 使用 pnpm 作为包管理器 |
 | 阶段二：后端核心功能 | ⬜ 未开始 | - | - | - |
 | 阶段三：前端核心功能 | ⬜ 未开始 | - | - | - |
 | 阶段四：前后端联调 | ⬜ 未开始 | - | - | - |
@@ -433,6 +433,12 @@ chore: 构建/工具变动
 - MVP 阶段：手动测试为主
 - 每个阶段完成后进行端到端测试
 - 记录发现的问题，及时修复
+
+### 包管理器
+- **前端统一使用 pnpm**（更快、更节省磁盘空间）
+- 安装依赖：`pnpm install`
+- 启动开发：`pnpm dev`
+- 构建生产版本：`pnpm build`
 
 ---
 
