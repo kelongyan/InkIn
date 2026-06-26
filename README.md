@@ -187,6 +187,8 @@ InkIn/
 
 - 🐛 Issues: [GitHub Issues](https://github.com/kelongyan/InkIn/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/kelongyan/InkIn/discussions)
+- 📧 Email: zhaxideler@gmail.com
+- 🐙 GitHub: [@kelong](https://github.com/kelongyan)
 
 ---
 
@@ -195,5 +197,5 @@ InkIn/
 </p>
 
 <p align="center">
-  Made with ❤️ by InkIn Team
+  Made with ❤️ by <a href="https://github.com/kelongyan">kelong</a>
 </p>
