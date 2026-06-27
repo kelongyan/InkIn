@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus'
 import { Upload, Loading } from '@element-plus/icons-vue'
 import { uploadImage } from '../utils/api.js'
 
-const emit = defineEmits(['upload-success'])
+const emit = defineEmits(['upload-start', 'upload-success', 'upload-error'])
 
 const isDragging = ref(false)
 const previewUrl = ref('')
@@ -41,6 +41,7 @@ function handleFile(file) {
 
 async function uploadFile(file) {
   uploading.value = true
+  emit('upload-start')
   try {
     const res = await uploadImage(file)
     if (res.success) {
@@ -48,9 +49,11 @@ async function uploadFile(file) {
       emit('upload-success', res.data)
     } else {
       ElMessage.error(res.error || '上传失败')
+      emit('upload-error')
     }
   } catch (err) {
     ElMessage.error('上传失败: ' + (err.message || '网络错误'))
+    emit('upload-error')
   } finally {
     uploading.value = false
   }

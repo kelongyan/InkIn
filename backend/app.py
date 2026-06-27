@@ -9,6 +9,21 @@ from api_handler import generate_comic
 app = Flask(__name__)
 CORS(app)
 
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({'success': False, 'error': '接口不存在'}), 404
+
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return jsonify({'success': False, 'error': '请求方法不允许'}), 405
+
+
+@app.errorhandler(500)
+def internal_error(e):
+    return jsonify({'success': False, 'error': '服务器内部错误'}), 500
+
 # 配置上传目录
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

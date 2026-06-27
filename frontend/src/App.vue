@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import ImageUploader from './components/ImageUploader.vue'
 import ApiSettings from './components/ApiSettings.vue'
@@ -10,11 +10,23 @@ const uploadedFile = ref(null)
 const originalUrl = ref('')
 const resultUrl = ref('')
 const generating = ref(false)
+const uploading = ref(false)
+
+const canGenerate = computed(() => uploadedFile.value && !generating.value && !uploading.value)
+
+function onUploadStart() {
+  uploading.value = true
+}
 
 function onUploadSuccess(data) {
   uploadedFile.value = data.filename
   originalUrl.value = data.url
   resultUrl.value = ''
+  uploading.value = false
+}
+
+function onUploadError() {
+  uploading.value = false
 }
 
 async function handleGenerate() {
@@ -70,12 +82,12 @@ async function handleGenerate() {
             <template #header>
               <span>📷 上传图片</span>
             </template>
-            <ImageUploader @upload-success="onUploadSuccess" />
+            <ImageUploader @upload-start="onUploadStart" @upload-success="onUploadSuccess" @upload-error="onUploadError" />
             <el-button
               type="primary"
               size="large"
               :loading="generating"
-              :disabled="!uploadedFile"
+              :disabled="!canGenerate"
               @click="handleGenerate"
               style="width: 100%; margin-top: 16px"
             >

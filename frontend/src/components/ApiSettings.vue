@@ -24,6 +24,15 @@ onMounted(async () => {
   }
 })
 
+function isValidUrl(url) {
+  try {
+    new URL(url)
+    return true
+  } catch {
+    return false
+  }
+}
+
 async function handleSave() {
   if (!config.value.api_key.trim()) {
     ElMessage.warning('请输入 API Key')
@@ -31,6 +40,10 @@ async function handleSave() {
   }
   if (!config.value.base_url.trim()) {
     ElMessage.warning('请输入 Base URL')
+    return
+  }
+  if (!isValidUrl(config.value.base_url)) {
+    ElMessage.warning('请输入有效的 URL 格式')
     return
   }
   if (!config.value.model.trim()) {
