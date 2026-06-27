@@ -61,43 +61,65 @@ async function handleGenerate() {
 
 <template>
   <div class="app-container">
+    <!-- 顶部墨色装饰条 -->
+    <div class="ink-bar"></div>
+
     <header class="app-header">
-      <h1>🎨 InkIn 入画</h1>
-      <p>照片变漫画，一键生成</p>
+      <h1 class="app-title">
+        <span class="title-en">InkIn</span>
+        <span class="title-divider">·</span>
+        <span class="title-cn">入画</span>
+      </h1>
+      <p class="app-subtitle">让照片走进艺术的世界</p>
     </header>
 
     <main class="app-main">
-      <el-row :gutter="24">
-        <el-col :xs="24" :sm="24" :md="10" :lg="8">
-          <el-card class="settings-card" shadow="hover">
+      <div class="layout">
+        <!-- 左侧：配置面板 -->
+        <aside class="sidebar">
+          <el-card class="card settings-card" shadow="never">
             <template #header>
-              <span>⚙️ API 配置</span>
+              <div class="card-header">
+                <span class="card-header-bar"></span>
+                <span>API 配置</span>
+              </div>
             </template>
             <ApiSettings />
           </el-card>
-        </el-col>
+        </aside>
 
-        <el-col :xs="24" :sm="24" :md="14" :lg="16">
-          <el-card class="upload-card" shadow="hover">
+        <!-- 右侧：上传 + 结果 -->
+        <div class="content">
+          <el-card class="card upload-card" shadow="never">
             <template #header>
-              <span>📷 上传图片</span>
+              <div class="card-header">
+                <span class="card-header-bar"></span>
+                <span>上传图片</span>
+              </div>
             </template>
-            <ImageUploader @upload-start="onUploadStart" @upload-success="onUploadSuccess" @upload-error="onUploadError" />
+            <ImageUploader
+              @upload-start="onUploadStart"
+              @upload-success="onUploadSuccess"
+              @upload-error="onUploadError"
+            />
             <el-button
               type="primary"
               size="large"
               :loading="generating"
               :disabled="!canGenerate"
+              class="generate-btn"
               @click="handleGenerate"
-              style="width: 100%; margin-top: 16px"
             >
               {{ generating ? '生成中...' : '✨ 生成漫画' }}
             </el-button>
           </el-card>
 
-          <el-card class="result-card" shadow="hover" style="margin-top: 24px">
+          <el-card class="card result-card" shadow="never">
             <template #header>
-              <span>🖼️ 生成结果</span>
+              <div class="card-header">
+                <span class="card-header-bar"></span>
+                <span>生成结果</span>
+              </div>
             </template>
             <ResultViewer
               :original-url="originalUrl"
@@ -105,59 +127,166 @@ async function handleGenerate() {
               :loading="generating"
             />
           </el-card>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
     </main>
 
     <footer class="app-footer">
-      <p>InkIn 入画 &copy; 2026</p>
+      <p>InkIn 入画 &copy; 2026 &middot; 让照片走进艺术的世界</p>
     </footer>
   </div>
 </template>
 
 <style scoped>
+/* 页面容器 */
 .app-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background-color: var(--color-bg);
 }
 
+/* 顶部墨色装饰条 */
+.ink-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #2c2c2c 0%, #4a4a4a 50%, #2c2c2c 100%);
+  flex-shrink: 0;
+}
+
+/* Header */
 .app-header {
   text-align: center;
-  color: white;
-  padding: 20px 0;
+  padding: var(--space-8) var(--space-6) var(--space-5);
 }
 
-.app-header h1 {
-  font-size: 2rem;
+.app-title {
+  font-family: var(--font-serif);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: 4px;
   margin: 0;
 }
 
-.app-header p {
-  margin: 8px 0 0;
-  opacity: 0.8;
+.title-en {
+  font-family: var(--font-serif);
 }
 
+.title-divider {
+  margin: 0 6px;
+  color: var(--color-vermilion);
+  font-weight: 400;
+}
+
+.title-cn {
+  font-family: var(--font-serif);
+}
+
+.app-subtitle {
+  margin-top: var(--space-2);
+  font-size: var(--text-base);
+  color: var(--color-ink-light);
+  letter-spacing: 2px;
+}
+
+/* 主内容区 */
 .app-main {
   flex: 1;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   width: 100%;
+  padding: 0 var(--space-6) var(--space-8);
 }
 
-.settings-card,
-.upload-card,
-.result-card {
-  margin-bottom: 0;
+.layout {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
 }
 
+/* 左侧栏 */
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--space-6);
+}
+
+/* 右侧内容 */
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 卡片通用样式 */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.3s ease;
+  margin-bottom: var(--space-6);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 卡片标题 */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.card-header-bar {
+  display: inline-block;
+  width: 3px;
+  height: 18px;
+  background-color: var(--color-vermilion);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* 生成按钮 */
+.generate-btn {
+  width: 100%;
+  margin-top: var(--space-5);
+  height: 44px;
+  font-size: var(--text-lg);
+  letter-spacing: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Footer */
 .app-footer {
   text-align: center;
-  color: white;
-  padding: 20px 0;
-  opacity: 0.7;
-  font-size: 14px;
+  padding: var(--space-5) var(--space-6);
+  color: var(--color-ink-faint);
+  font-size: var(--text-sm);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .app-title {
+    font-size: var(--text-2xl);
+  }
+
+  .app-main {
+    padding: 0 var(--space-4) var(--space-6);
+  }
 }
 </style>

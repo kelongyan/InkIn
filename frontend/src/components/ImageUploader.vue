@@ -15,7 +15,7 @@ const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 
 function validateFile(file) {
   if (!ALLOWED_TYPES.includes(file.type)) {
-    ElMessage.error('仅支持 JPG/PNG/GIF/WebP 格式')
+    ElMessage.error('仅支持 JPG / PNG / GIF / WebP 格式')
     return false
   }
   if (file.size > MAX_SIZE) {
@@ -28,14 +28,12 @@ function validateFile(file) {
 function handleFile(file) {
   if (!validateFile(file)) return
 
-  // 预览
   const reader = new FileReader()
   reader.onload = (e) => {
     previewUrl.value = e.target.result
   }
   reader.readAsDataURL(file)
 
-  // 上传
   uploadFile(file)
 }
 
@@ -91,25 +89,33 @@ function onFileChange(e) {
       @dragleave="onDragLeave"
       @click="$refs.fileInput.click()"
     >
+      <!-- 上传中 -->
       <div v-if="uploading" class="upload-loading">
         <el-icon class="is-loading" :size="40"><Loading /></el-icon>
         <p>上传中...</p>
       </div>
+
+      <!-- 已有预览 -->
       <div v-else-if="previewUrl" class="preview">
         <img :src="previewUrl" alt="预览" />
         <p class="hint">点击重新选择</p>
       </div>
+
+      <!-- 空状态占位 -->
       <div v-else class="placeholder">
-        <el-icon :size="48"><Upload /></el-icon>
-        <p>拖拽图片到这里，或 <em>点击选择</em></p>
-        <p class="tip">支持 JPG/PNG/GIF/WebP，最大 10MB</p>
+        <div class="placeholder-icon">
+          <el-icon :size="48"><Upload /></el-icon>
+        </div>
+        <p class="placeholder-text">拖拽图片到这里，或 <em>点击选择</em></p>
+        <p class="placeholder-tip">支持 JPG / PNG / GIF / WebP，最大 10MB</p>
       </div>
     </div>
+
     <input
       ref="fileInput"
       type="file"
       accept="image/jpeg,image/png,image/gif,image/webp"
-      style="display: none"
+      class="file-input"
       @change="onFileChange"
     />
   </div>
@@ -121,53 +127,85 @@ function onFileChange(e) {
 }
 
 .drop-zone {
-  border: 2px dashed #dcdfe6;
-  border-radius: 12px;
-  padding: 40px 20px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 48px var(--space-5);
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s;
-  background: #fafafa;
+  transition: all 0.3s ease;
+  background-color: var(--color-bg-warm);
 }
 
-.drop-zone:hover,
+.drop-zone:hover {
+  border-color: var(--color-vermilion);
+  background-color: var(--color-vermilion-light);
+}
+
 .drop-zone.dragging {
-  border-color: #409eff;
-  background: #ecf5ff;
+  border-color: var(--color-vermilion);
+  border-style: solid;
+  background-color: var(--color-vermilion-light);
+  transform: scale(1.01);
 }
 
 .drop-zone.has-image {
-  padding: 20px;
+  padding: var(--space-5);
 }
 
-.placeholder {
-  color: #909399;
+/* 空状态 */
+.placeholder-icon {
+  color: var(--color-ink-faint);
+  margin-bottom: var(--space-3);
+  transition: color 0.3s ease;
 }
 
-.placeholder em {
-  color: #409eff;
+.drop-zone:hover .placeholder-icon {
+  color: var(--color-vermilion);
+}
+
+.placeholder-text {
+  color: var(--color-ink-light);
+  font-size: var(--text-base);
+  margin-bottom: var(--space-2);
+}
+
+.placeholder-text em {
+  color: var(--color-vermilion);
   font-style: normal;
+  font-weight: 500;
 }
 
-.placeholder .tip {
-  font-size: 12px;
-  color: #c0c4cc;
-  margin-top: 8px;
+.placeholder-tip {
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
 }
 
+/* 预览图 */
 .preview img {
   max-width: 100%;
   max-height: 300px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
 }
 
 .preview .hint {
-  font-size: 12px;
-  color: #909399;
-  margin-top: 8px;
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
+  margin-top: var(--space-2);
 }
 
+/* 上传加载 */
 .upload-loading {
-  color: #409eff;
+  color: var(--color-vermilion);
+}
+
+.upload-loading p {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+/* 隐藏文件 input */
+.file-input {
+  display: none;
 }
 </style>

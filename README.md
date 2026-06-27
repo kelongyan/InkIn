@@ -42,14 +42,18 @@
 
 **Windows (PowerShell)：**
 ```powershell
-.\start.ps1
+.\start.ps1      # 启动
+.\stop.ps1       # 停止
 ```
 
 **Linux / macOS：**
 ```bash
-chmod +x start.sh
-./start.sh
+chmod +x start.sh stop.sh
+./start.sh       # 启动
+./stop.sh        # 停止
 ```
+
+> 服务后台常驻运行，关闭终端不会中断。日志保存在 `.run/logs/` 目录下。
 
 ### 方式二：手动启动
 
@@ -122,13 +126,14 @@ InkIn 不挑食，只要是 OpenAI 格式的 API 都能用：
 ```
 InkIn/
 ├── 📄 README.md                 # 你在看的这个
-├── 📄 start.bat                 # Windows 一键启动
+├── 📄 start.ps1 / stop.ps1     # Windows 启动/停止
+├── 📄 start.sh  / stop.sh      # Linux/Mac 启动/停止
 ├── 📂 docs/                     # 文档
 │   └── PROJECT_PLAN.md          # 详细规划书
 ├── 📂 backend/                  # 后端（Flask）
 │   ├── app.py                   # 主应用
 │   ├── api_handler.py           # API 调用
-│   └── config.json              # 配置文件
+│   └── config.json              # 配置文件（gitignore）
 └── 📂 frontend/                 # 前端（Vue）
     └── src/
         ├── App.vue              # 主组件

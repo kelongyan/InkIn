@@ -71,11 +71,15 @@ async function handleSave() {
 <template>
   <div class="api-settings">
     <el-form label-position="top" size="default">
-      <el-form-item label="API Key">
+      <el-form-item>
+        <template #label>
+          <span class="label-text">API Key</span>
+        </template>
         <el-input
           v-model="config.api_key"
           :type="showKey ? 'text' : 'password'"
           placeholder="sk-..."
+          class="settings-input"
         >
           <template #append>
             <el-button @click="showKey = !showKey">
@@ -83,28 +87,39 @@ async function handleSave() {
             </el-button>
           </template>
         </el-input>
-      </el-form-item>
-
-      <el-form-item label="Base URL">
-        <el-input
-          v-model="config.base_url"
-          placeholder="https://api.openai.com/v1"
-        />
-      </el-form-item>
-
-      <el-form-item label="Model ID">
-        <el-input
-          v-model="config.model"
-          placeholder="gpt-4o"
-        />
+        <p class="field-hint">在对应平台的控制台获取</p>
       </el-form-item>
 
       <el-form-item>
+        <template #label>
+          <span class="label-text">Base URL</span>
+        </template>
+        <el-input
+          v-model="config.base_url"
+          placeholder="https://api.openai.com/v1"
+          class="settings-input"
+        />
+        <p class="field-hint">API 接口地址，需兼容 OpenAI 格式</p>
+      </el-form-item>
+
+      <el-form-item>
+        <template #label>
+          <span class="label-text">Model ID</span>
+        </template>
+        <el-input
+          v-model="config.model"
+          placeholder="gpt-4o"
+          class="settings-input"
+        />
+        <p class="field-hint">模型名称，如 gpt-4o、qwen-vl-max</p>
+      </el-form-item>
+
+      <el-form-item class="save-item">
         <el-button
           type="primary"
           :loading="loading"
+          class="save-btn"
           @click="handleSave"
-          style="width: 100%"
         >
           保存配置
         </el-button>
@@ -116,5 +131,38 @@ async function handleSave() {
 <style scoped>
 .api-settings {
   width: 100%;
+}
+
+.label-text {
+  font-weight: 500;
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+}
+
+.field-hint {
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
+  margin-top: var(--space-1);
+  line-height: 1.4;
+}
+
+.settings-input :deep(.el-input__wrapper) {
+  border-radius: var(--radius-sm);
+}
+
+.settings-input :deep(.el-input__wrapper:focus-within) {
+  box-shadow: 0 0 0 1px var(--color-vermilion) inset;
+}
+
+.save-item {
+  margin-bottom: 0;
+}
+
+.save-btn {
+  width: 100%;
+  height: 40px;
+  font-size: var(--text-base);
+  letter-spacing: 1px;
+  border-radius: var(--radius-sm);
 }
 </style>

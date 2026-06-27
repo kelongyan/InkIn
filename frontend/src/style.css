@@ -1,16 +1,102 @@
-* {
+/* ============================
+   InkIn 入画 — 全局样式
+   设计语言：水墨黑 + 宣纸白 + 朱砂红
+   ============================ */
+
+:root {
+  /* 色彩体系 */
+  --color-bg: #f5f0e8;           /* 宣纸米白 */
+  --color-bg-warm: #faf7f2;      /* 更暖的浅底 */
+  --color-surface: #ffffff;      /* 卡片/表面 */
+  --color-ink: #2c2c2c;          /* 墨色-主文字 */
+  --color-ink-light: #6b6b6b;    /* 淡墨-次要文字 */
+  --color-ink-faint: #9c9c9c;    /* 极淡-辅助文字 */
+  --color-vermilion: #c23531;    /* 朱砂红-主强调 */
+  --color-vermilion-hover: #a82828; /* 朱砂红-hover */
+  --color-vermilion-light: #fdf2f2; /* 浅朱砂-背景 */
+  --color-vermilion-bg: #f9e8e8;    /* 朱砂红-卡片背景 */
+  --color-border: #e8e0d4;       /* 暖灰边框 */
+  --color-border-light: #f0ebe3; /* 更淡边框 */
+  --color-shadow: rgba(44, 44, 44, 0.08); /* 暖色阴影 */
+
+  /* 字体 */
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+
+  /* 排版 */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+
+  /* 间距 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* 圆角 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* 阴影 */
+  --shadow-card: 0 2px 12px var(--color-shadow);
+  --shadow-card-hover: 0 4px 20px rgba(44, 44, 44, 0.12);
+}
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+html {
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+}
+
 #app {
   min-height: 100vh;
+}
+
+/* Element Plus 主题色覆盖 */
+:root {
+  --el-color-primary: #c23531;
+  --el-color-primary-light-3: #d4605c;
+  --el-color-primary-light-5: #e0908d;
+  --el-color-primary-light-7: #ecc3c2;
+  --el-color-primary-light-8: #f2d9d8;
+  --el-color-primary-light-9: #f9ecec;
+  --el-color-primary-dark-2: #a82828;
+  --el-border-radius-base: 6px;
+  --el-font-family: var(--font-sans);
+}
+
+/* 全局滚动条美化 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
 }
