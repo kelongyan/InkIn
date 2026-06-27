@@ -38,44 +38,54 @@
 
 ## 🚀 快速开始
 
-### 1️⃣ 克隆项目
+### 方式一：一键启动（推荐）
 
+**Windows (PowerShell)：**
+```powershell
+.\start.ps1
+```
+
+**Linux / macOS：**
 ```bash
-git clone git@github.com:kelongyan/InkIn.git
+chmod +x start.sh
+./start.sh
+```
+
+### 方式二：手动启动
+
+**1️⃣ 克隆项目**
+```bash
+git clone https://github.com/kelongyan/InkIn.git
 cd InkIn
 ```
 
-### 2️⃣ 启动后端
-
+**2️⃣ 启动后端**
 ```bash
 cd backend
 pip install -r requirements.txt
 python app.py
 ```
+🎉 后端跑起来了！访问 http://localhost:5000/api/health
 
-🎉 后端跑起来了！访问 http://localhost:5000
-
-### 3️⃣ 启动前端
-
+**3️⃣ 启动前端**
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
+🎉 前端跑起来了！访问 http://localhost:3000
 
-🎉 前端跑起来了！访问 http://localhost:5173
+**4️⃣ 配置 API**
 
-### 4️⃣ 配置 API
-
-打开浏览器，点击设置按钮，填入你的 API 信息：
+打开浏览器 http://localhost:3000，点击「API 配置」卡片，填入你的 API 信息：
 
 - **API Key**: 你的密钥
-- **Base URL**: API 地址
-- **Model ID**: 模型名称
+- **Base URL**: API 地址（如 `https://api.openai.com/v1`）
+- **Model ID**: 模型名称（如 `gpt-4o`）
 
-### 5️⃣ 开始入画！
+**5️⃣ 开始入画！**
 
-拖拽一张照片进去，点击"生成漫画"，见证奇迹的时刻！🪄
+拖拽一张照片进去，点击「✨ 生成漫画」，见证奇迹的时刻！🪄
 
 ---
 
