@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Upload, Loading } from '@element-plus/icons-vue'
 import { uploadImage } from '../utils/api.js'
 
 const emit = defineEmits(['upload-start', 'upload-success', 'upload-error'])
@@ -11,7 +10,7 @@ const previewUrl = ref('')
 const uploading = ref(false)
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
-const MAX_SIZE = 10 * 1024 * 1024 // 10MB
+const MAX_SIZE = 10 * 1024 * 1024
 
 function validateFile(file) {
   if (!ALLOWED_TYPES.includes(file.type)) {
@@ -83,47 +82,36 @@ function onFileChange(e) {
   <div class="image-uploader">
     <div
       class="canvas-wrap"
-      :class="{ dragging: isDragging, 'has-image': previewUrl }"
+      :class="{ dragging: isDragging, 'has-image': previewUrl, 'is-uploading': uploading }"
       @drop="onDrop"
       @dragover="onDragOver"
       @dragleave="onDragLeave"
       @click="$refs.fileInput.click()"
     >
-      <!-- 四角装饰 -->
-      <span class="corner corner-tl"></span>
-      <span class="corner corner-tr"></span>
-      <span class="corner corner-bl"></span>
-      <span class="corner corner-br"></span>
-
-      <!-- 上传中 -->
-      <div v-if="uploading" class="state uploading">
-        <el-icon class="is-loading" :size="40"><Loading /></el-icon>
-        <p>墨水渲染中...</p>
+      <!-- 上传中：halftone 网点 -->
+      <div v-if="uploading" class="state uploading-state">
+        <div class="halftone-spinner"></div>
+        <p class="state-label">渲染中...</p>
       </div>
 
-      <!-- 已有预览 — 画卷卷轴样式 -->
-      <div v-else-if="previewUrl" class="scroll-preview">
-        <div class="scroll-rod scroll-rod-top"></div>
-        <div class="scroll-body">
+      <!-- 已有预览 -->
+      <div v-else-if="previewUrl" class="preview-wrap">
+        <div class="preview-frame img-panel">
           <img :src="previewUrl" alt="预览" />
         </div>
-        <div class="scroll-rod scroll-rod-bottom"></div>
         <p class="reselect-hint">点击重新选择</p>
       </div>
 
       <!-- 空状态 -->
-      <div v-else class="state empty">
-        <div class="brush-icon">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M48 8L20 36l-4 16 16-4L60 20 48 8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M20 36l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M8 56h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="52" cy="12" r="3" fill="currentColor" opacity="0.3"/>
+      <div v-else class="state empty-state">
+        <div class="upload-icon">
+          <svg viewBox="0 0 40 40" fill="none">
+            <rect x="4" y="4" width="32" height="32" rx="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M20 12v16M12 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <p class="empty-title">将照片放上画布</p>
-        <p class="empty-sub">拖拽图片到这里，或 <em>点击选择</em></p>
-        <p class="empty-tip">JPG / PNG / GIF / WebP &middot; 最大 10MB</p>
+        <p class="state-title">拖入照片，或点击选择</p>
+        <p class="state-hint">JPG / PNG / GIF / WebP &middot; 最大 10MB</p>
       </div>
     </div>
 
@@ -145,152 +133,129 @@ function onFileChange(e) {
 /* ====== 画布外壳 ====== */
 .canvas-wrap {
   position: relative;
-  border: 2px solid var(--color-border);
-  border-radius: 12px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
   padding: 48px 24px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.4s ease;
-  background: var(--color-bg-warm);
+  transition: all 0.3s ease;
+  background: var(--color-canvas);
   overflow: hidden;
 }
 
 .canvas-wrap:hover {
-  border-color: var(--color-vermilion);
-  background: var(--color-vermilion-light);
+  border-color: var(--color-pop);
+  border-style: solid;
+  background: var(--color-pop-light);
 }
 
 .canvas-wrap.dragging {
-  border-color: var(--color-vermilion);
+  border-color: var(--color-pop);
+  border-style: solid;
   border-width: 3px;
-  background: var(--color-vermilion-light);
-  animation: ink-spread 0.6s ease-out;
+  background: var(--color-pop-light);
+  transform: scale(1.01);
 }
 
 .canvas-wrap.has-image {
-  padding: 24px;
-  background: var(--color-surface);
+  border-style: solid;
+  border-color: var(--color-border);
+  padding: 20px;
+  background: var(--color-panel);
 }
 
-/* ====== 四角装饰 ====== */
-.corner {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-color: var(--color-ink);
+.canvas-wrap.has-image:hover {
+  border-color: var(--color-pop);
+}
+
+.canvas-wrap.is-uploading {
   border-style: solid;
-  opacity: 0.12;
-  transition: opacity 0.3s ease;
+  border-color: var(--color-pop);
+  background: var(--color-pop-light);
 }
-.canvas-wrap:hover .corner {
-  opacity: 0.3;
-  border-color: var(--color-vermilion);
-}
-.corner-tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
-.corner-tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
-.corner-bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; }
-.corner-br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
 
 /* ====== 通用状态 ====== */
 .state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 /* ====== 空状态 ====== */
-.brush-icon {
-  width: 56px;
-  height: 56px;
-  color: var(--color-ink-faint);
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-halftone);
   margin-bottom: 8px;
   transition: color 0.3s ease;
 }
-.canvas-wrap:hover .brush-icon {
-  color: var(--color-vermilion);
+.canvas-wrap:hover .upload-icon {
+  color: var(--color-pop);
 }
-.brush-icon svg {
+.upload-icon svg {
   width: 100%;
   height: 100%;
 }
 
-.empty-title {
-  font-family: var(--font-serif);
-  font-size: 18px;
-  color: var(--color-ink);
+.state-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
   font-weight: 600;
-  letter-spacing: 2px;
+  color: var(--color-ink);
+  letter-spacing: 0.5px;
 }
 
-.empty-sub {
-  color: var(--color-ink-light);
-  font-size: 14px;
-}
-.empty-sub em {
-  color: var(--color-vermilion);
-  font-style: normal;
-  font-weight: 500;
-  border-bottom: 1px dashed var(--color-vermilion);
-  padding-bottom: 1px;
-}
-
-.empty-tip {
-  font-size: 12px;
-  color: var(--color-ink-faint);
-  margin-top: 4px;
+.state-hint {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  letter-spacing: 0.5px;
 }
 
 /* ====== 上传中 ====== */
-.uploading {
-  color: var(--color-vermilion);
-  padding: 32px 0;
-}
-.uploading p {
-  font-size: 14px;
-  color: var(--color-ink-light);
+.uploading-state {
+  padding: 24px 0;
 }
 
-/* ====== 卷轴预览 ====== */
-.scroll-preview {
+.halftone-spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-image: radial-gradient(circle, var(--color-pop) 1.5px, transparent 1.5px);
+  background-size: 6px 6px;
+  animation: halftone-reveal 1.5s ease-in-out infinite alternate;
+  opacity: 0.6;
+}
+
+.state-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-top: 4px;
+}
+
+/* ====== 预览 ====== */
+.preview-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
+  gap: 12px;
 }
 
-.scroll-rod {
-  width: calc(100% + 32px);
-  height: 10px;
-  background: linear-gradient(
-    180deg,
-    var(--color-border) 0%,
-    var(--color-bg-warm) 40%,
-    var(--color-border) 100%
-  );
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  flex-shrink: 0;
-}
-
-.scroll-body {
-  width: 100%;
-  padding: 8px 0;
-  display: flex;
-  justify-content: center;
-}
-
-.scroll-body img {
+.preview-frame {
   max-width: 100%;
-  max-height: 360px;
-  border-radius: 4px;
-  box-shadow: 0 2px 16px rgba(44, 44, 44, 0.1);
+  border-radius: var(--radius-sm);
+}
+.preview-frame img {
+  max-height: 340px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
 }
 
 .reselect-hint {
-  font-size: 12px;
-  color: var(--color-ink-faint);
-  margin-top: 12px;
+  font-size: var(--text-xs);
+  color: var(--color-muted);
 }
 
 /* ====== 隐藏 input ====== */

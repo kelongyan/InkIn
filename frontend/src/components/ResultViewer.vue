@@ -1,6 +1,4 @@
 <script setup>
-import { Loading } from '@element-plus/icons-vue'
-
 const props = defineProps({
   originalUrl: String,
   resultUrl: String,
@@ -21,238 +19,204 @@ function downloadImage() {
 
 <template>
   <div class="result-viewer">
-    <!-- 加载中 -->
-    <div v-if="loading" class="state loading-state">
-      <div class="loading-ring">
-        <el-icon class="is-loading" :size="36"><Loading /></el-icon>
-      </div>
-      <p class="state-title">水墨晕染中</p>
-      <p class="state-tip">正在将你的照片绘入画中…</p>
-      <div class="loading-dots">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
+    <!-- 整个舞台：未生成时不显示 -->
+    <Transition name="stage-in">
+      <div
+        v-if="originalUrl || resultUrl || loading"
+        class="stage"
+      >
+        <!-- 底层：原图（生成时显影登场）-->
+        <img
+          v-if="originalUrl"
+          :src="originalUrl"
+          class="layer layer-original"
+          alt="原图"
+        />
 
-    <!-- 有结果 — 画廊展示 -->
-    <div v-else-if="resultUrl" class="gallery-show">
-      <div class="compare-row">
-        <!-- 原图 -->
-        <div class="artwork">
-          <div class="artwork-frame img-frame">
-            <img v-if="originalUrl" :src="originalUrl" alt="原图" />
+        <!-- 覆盖层：漫画（变身特效，覆盖原图）-->
+        <Transition name="transform">
+          <img
+            v-if="resultUrl"
+            :src="resultUrl"
+            class="layer layer-result"
+            alt="漫画"
+          />
+        </Transition>
+
+        <!-- 生成中：halftone 网点覆盖 -->
+        <Transition name="fade">
+          <div v-if="loading" class="loading-overlay">
+            <div class="loading-halftone"></div>
+            <p class="loading-title">正在绘制</p>
+            <p class="loading-tip">将你的照片绘入漫画…</p>
           </div>
-          <p class="artwork-label">原 作</p>
-        </div>
-
-        <!-- 转换箭头 -->
-        <div class="arrow-wrap">
-          <svg class="arrow-svg" viewBox="0 0 48 48" fill="none">
-            <path d="M8 24h28M28 16l8 8-8 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-
-        <!-- 漫画 -->
-        <div class="artwork">
-          <div class="artwork-frame img-frame">
-            <img :src="resultUrl" alt="漫画" />
-          </div>
-          <p class="artwork-label">入 画</p>
-        </div>
+        </Transition>
       </div>
+    </Transition>
 
-      <div class="gallery-actions">
-        <el-button type="primary" class="collect-btn" @click="downloadImage">
+    <!-- 下载按钮：漫画变身完成后浮现 -->
+    <Transition name="fade-up">
+      <div v-if="resultUrl && !loading" class="gallery-actions">
+        <button class="download-btn" @click="downloadImage">
           <svg viewBox="0 0 20 20" fill="none" class="btn-icon">
             <path d="M10 3v10M6 9l4 4 4-4M4 15h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          收藏作品
-        </el-button>
+          下载作品
+        </button>
       </div>
-    </div>
-
-    <!-- 空状态 -->
-    <div v-else class="state empty-state">
-      <div class="empty-scroll">
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="16" width="60" height="48" rx="3" stroke="currentColor" stroke-width="1.5"/>
-          <rect x="10" y="16" width="60" height="8" rx="3" stroke="currentColor" stroke-width="1.5"/>
-          <rect x="10" y="56" width="60" height="8" rx="3" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M24 40h32M40 32v16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-        </svg>
-      </div>
-      <p class="state-title">画卷尚空</p>
-      <p class="state-tip">上传图片并点击「开始入画」，作品将在此展出</p>
-    </div>
+    </Transition>
   </div>
 </template>
 
 <style scoped>
 .result-viewer {
   width: 100%;
-  min-height: 260px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
-
-/* ====== 通用状态 ====== */
-.state {
-  text-align: center;
-  padding: 48px 20px;
-  width: 100%;
-}
-
-.state-title {
-  font-family: var(--font-serif);
-  font-size: 16px;
-  color: var(--color-ink);
-  font-weight: 600;
-  letter-spacing: 3px;
-  margin-top: 16px;
-}
-
-.state-tip {
-  font-size: 13px;
-  color: var(--color-ink-faint);
-  margin-top: 8px;
-  letter-spacing: 1px;
-}
-
-/* ====== 加载状态 ====== */
-.loading-ring {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 2px solid var(--color-border);
-  border-top-color: var(--color-vermilion);
-  color: var(--color-vermilion);
-}
-
-.loading-dots {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-top: 16px;
-}
-.loading-dots span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-vermilion);
-  opacity: 0.3;
-  animation: fade-in 1s ease-in-out infinite alternate;
-}
-.loading-dots span:nth-child(2) { animation-delay: 0.3s; }
-.loading-dots span:nth-child(3) { animation-delay: 0.6s; }
-
-/* ====== 画廊展示 ====== */
-.gallery-show {
-  width: 100%;
-  animation: fade-up 0.6s ease-out;
-}
-
-.compare-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 20px;
-  flex-wrap: wrap;
 }
 
-/* 作品卡片 */
-.artwork {
-  flex: 1;
-  min-width: 200px;
-  max-width: 380px;
-  text-align: center;
-}
-
-.artwork-frame {
+/* ====== 舞台：整体登场 ====== */
+.stage {
+  position: relative;
+  width: 100%;
+  min-height: 380px;
+  background: var(--color-canvas);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
-.artwork-frame img {
+
+/* 舞台入场：从无到有，带轻微缩放 */
+.stage-in-enter-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.stage-in-enter-from {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  display: block;
-  border-radius: 1px;
+  height: 100%;
+  object-fit: contain;
 }
 
-.artwork-label {
-  font-family: var(--font-serif);
-  font-size: 14px;
-  color: var(--color-ink-light);
-  letter-spacing: 6px;
-  margin-top: 12px;
-  font-weight: 500;
+.layer-original {
+  z-index: 1;
+  animation: fade-in 0.5s ease-out;
 }
 
-/* 转换箭头 */
-.arrow-wrap {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+.layer-result {
+  z-index: 2;
+}
+
+/* ====== 变身特效：漫画覆盖原图 ======
+   模拟「变身」：从模糊+放大+高亮 → 清晰定格 */
+.transform-enter-active {
+  transition: opacity 0.8s ease-out, filter 0.8s ease-out, transform 0.8s ease-out;
+}
+.transform-enter-from {
+  opacity: 0;
+  filter: blur(16px) brightness(1.4);
+  transform: scale(1.1);
+}
+
+/* ====== loading 覆盖 ====== */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--color-vermilion);
-  opacity: 0.6;
+  gap: 4px;
+  background: rgba(250, 250, 247, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
-.arrow-svg {
-  width: 36px;
-  height: 36px;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
-/* 操作区 */
+.loading-halftone {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-image: radial-gradient(circle, var(--color-pop) 1.5px, transparent 1.5px);
+  background-size: 6px 6px;
+  animation: halftone-reveal 1.5s ease-in-out infinite alternate;
+  opacity: 0.5;
+}
+
+.loading-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-ink);
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+}
+
+.loading-tip {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* ====== 下载按钮 ====== */
 .gallery-actions {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
 }
 
-.collect-btn {
-  height: 44px;
-  padding: 0 32px;
-  font-size: 15px;
-  letter-spacing: 2px;
-  border-radius: 8px;
+.fade-up-enter-active {
+  transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
+}
+.fade-up-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.download-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  height: 44px;
+  padding: 0 28px;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--color-pop);
+  background: transparent;
+  border: 2px solid var(--color-pop);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.download-btn:hover {
+  background: var(--color-pop);
+  color: var(--color-panel);
 }
 
 .btn-icon {
-  width: 18px;
-  height: 18px;
-}
-
-/* ====== 空状态 ====== */
-.empty-scroll {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 12px;
-  color: var(--color-border);
-}
-.empty-scroll svg {
-  width: 100%;
-  height: 100%;
+  width: 16px;
+  height: 16px;
 }
 
 /* ====== 响应式 ====== */
-@media (max-width: 640px) {
-  .compare-row {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .artwork {
-    max-width: 100%;
-  }
-
-  .arrow-wrap {
-    transform: rotate(90deg);
+@media (max-width: 900px) {
+  .stage {
+    min-height: 300px;
   }
 }
 </style>

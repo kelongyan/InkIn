@@ -79,7 +79,6 @@ async function handleSave() {
           v-model="config.api_key"
           :type="showKey ? 'text' : 'password'"
           placeholder="sk-..."
-          class="settings-input"
         >
           <template #append>
             <el-button @click="showKey = !showKey">
@@ -97,7 +96,6 @@ async function handleSave() {
         <el-input
           v-model="config.base_url"
           placeholder="https://api.openai.com/v1"
-          class="settings-input"
         />
         <p class="field-hint">API 接口地址，需兼容 OpenAI 格式</p>
       </el-form-item>
@@ -109,7 +107,6 @@ async function handleSave() {
         <el-input
           v-model="config.model"
           placeholder="gpt-4o"
-          class="settings-input"
         />
         <p class="field-hint">模型名称，如 gpt-4o、qwen-vl-max</p>
       </el-form-item>
@@ -134,24 +131,19 @@ async function handleSave() {
 }
 
 .label-text {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
   font-weight: 500;
-  color: var(--color-ink);
-  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .field-hint {
   font-size: var(--text-xs);
-  color: var(--color-ink-faint);
-  margin-top: var(--space-1);
+  color: var(--color-muted);
+  margin-top: 4px;
   line-height: 1.4;
-}
-
-.settings-input :deep(.el-input__wrapper) {
-  border-radius: var(--radius-sm);
-}
-
-.settings-input :deep(.el-input__wrapper:focus-within) {
-  box-shadow: 0 0 0 1px var(--color-vermilion) inset;
 }
 
 .save-item {
@@ -161,8 +153,10 @@ async function handleSave() {
 .save-btn {
   width: 100%;
   height: 40px;
+  font-family: var(--font-display);
   font-size: var(--text-base);
-  letter-spacing: 1px;
-  border-radius: var(--radius-sm);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-xs);
 }
 </style>

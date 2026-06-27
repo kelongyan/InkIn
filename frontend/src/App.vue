@@ -47,10 +47,6 @@ async function handleGenerate() {
       if (res.data.image_url) {
         resultUrl.value = res.data.image_url
         ElMessage.success('漫画生成成功！')
-        // 滚动到结果区
-        setTimeout(() => {
-          document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
-        }, 300)
       } else if (res.data.content) {
         ElMessage.info('模型返回了文字描述，请检查模型是否支持图片生成')
       }
@@ -63,22 +59,21 @@ async function handleGenerate() {
     generating.value = false
   }
 }
-
-function scrollToStudio() {
-  document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' })
-}
 </script>
 
 <template>
   <div class="app">
-    <!-- ====== Hero 首屏 ====== -->
-    <section class="hero paper-texture">
-      <!-- 水墨装饰 -->
-      <div class="hero-ink hero-ink-1"></div>
-      <div class="hero-ink hero-ink-2"></div>
-      <div class="hero-ink hero-ink-3"></div>
+    <!-- ====== 顶栏 ====== -->
+    <header class="app-header">
+      <div class="brand">
+        <h1 class="brand-logo">
+          <span class="brand-en">InkIn</span>
+          <span class="brand-dot">·</span>
+          <span class="brand-cn">入画</span>
+        </h1>
+        <p class="brand-tagline">你的照片，值得一个漫画版本</p>
+      </div>
 
-      <!-- 配置入口 -->
       <el-button
         class="settings-trigger"
         :icon="Setting"
@@ -86,34 +81,18 @@ function scrollToStudio() {
         plain
         @click="drawerVisible = true"
       />
+    </header>
 
-      <div class="hero-content">
-        <h1 class="hero-title">
-          <span class="hero-title-en">InkIn</span>
-          <span class="hero-dot">·</span>
-          <span class="hero-title-cn">入画</span>
-        </h1>
-        <div class="hero-line"></div>
-        <p class="hero-subtitle">将你的照片，绘入艺术的世界</p>
-      </div>
-
-      <div class="hero-scroll" @click="scrollToStudio">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
-      </div>
-    </section>
-
-    <!-- ====== 创作工作台 ====== -->
-    <section id="studio" class="studio paper-texture">
-      <div class="studio-inner">
-        <div class="studio-label">
-          <span class="studio-label-line"></span>
-          <span class="studio-label-text">创 作 工 作 台</span>
-          <span class="studio-label-line"></span>
+    <!-- ====== 工作区（上传 + 结果 并排一页）====== -->
+    <main class="workspace">
+      <!-- 左：创作工作台 -->
+      <section class="studio-col">
+        <div class="section-label">
+          <span class="section-label-text">STUDIO</span>
+          <span class="section-label-line"></span>
         </div>
 
-        <div class="canvas-area">
+        <div class="upload-panel panel-frame">
           <ImageUploader
             @upload-start="onUploadStart"
             @upload-success="onUploadSuccess"
@@ -121,40 +100,42 @@ function scrollToStudio() {
           />
         </div>
 
-        <el-button
-          type="primary"
-          size="large"
-          :loading="generating"
-          :disabled="!canGenerate"
+        <button
           class="generate-btn"
+          :class="{ 'is-loading': generating }"
+          :disabled="!canGenerate"
           @click="handleGenerate"
         >
-          {{ generating ? '水墨晕染中...' : '✨ 开始入画' }}
-        </el-button>
-      </div>
-    </section>
+          <svg v-if="!generating" class="generate-icon" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9 5.5-.8L10 2z"
+              stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="currentColor" opacity="0.15"/>
+          </svg>
+          <span v-if="generating" class="generate-spinner"></span>
+          {{ generating ? '绘制中...' : '开始变身' }}
+        </button>
+      </section>
 
-    <!-- ====== 作品展厅 ====== -->
-    <section id="gallery" class="gallery paper-texture">
-      <div class="gallery-inner">
-        <div class="gallery-label">
-          <span class="gallery-label-line"></span>
-          <span class="gallery-label-text">作 品 展 厅</span>
-          <span class="gallery-label-line"></span>
+      <!-- 右：作品展厅 -->
+      <section class="gallery-col">
+        <div class="section-label">
+          <span class="section-label-text">GALLERY</span>
+          <span class="section-label-line"></span>
         </div>
 
-        <ResultViewer
-          :original-url="originalUrl"
-          :result-url="resultUrl"
-          :loading="generating"
-        />
-      </div>
-    </section>
+        <div class="gallery-panel panel-frame">
+          <ResultViewer
+            :original-url="originalUrl"
+            :result-url="resultUrl"
+            :loading="generating"
+          />
+        </div>
+      </section>
+    </main>
 
-    <!-- ====== 页脚印章 ====== -->
+    <!-- ====== Footer ====== -->
     <footer class="app-footer">
-      <span class="seal">InkIn</span>
-      <span class="footer-text">入画 &copy; 2026</span>
+      <span class="footer-mark">InkIn</span>
+      <span class="footer-copy">&copy; 2026</span>
     </footer>
 
     <!-- ====== API 配置抽屉 ====== -->
@@ -171,263 +152,242 @@ function scrollToStudio() {
 </template>
 
 <style scoped>
-/* ====== 页面整体 ====== */
 .app {
   min-height: 100vh;
-  background-color: var(--color-bg);
-  overflow-x: hidden;
-}
-
-/* ====== Hero 首屏 ====== */
-.hero {
-  position: relative;
-  min-height: 100vh;
+  background-color: var(--color-canvas);
   display: flex;
   flex-direction: column;
+}
+
+/* ====== 顶栏 ====== */
+.app-header {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(194, 53, 49, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(44, 44, 44, 0.03) 0%, transparent 50%),
-    var(--color-bg);
-  overflow: hidden;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
-/* 水墨装饰圆 */
-.hero-ink {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(44, 44, 44, 0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-ink-1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  left: -100px;
-  animation: ink-drop 3s ease-out forwards;
-}
-.hero-ink-2 {
-  width: 250px;
-  height: 250px;
-  bottom: 10%;
-  right: 5%;
-  animation: ink-drop 3s 0.5s ease-out forwards;
-}
-.hero-ink-3 {
-  width: 150px;
-  height: 150px;
-  top: 30%;
-  right: 20%;
-  background: radial-gradient(circle, rgba(194, 53, 49, 0.05) 0%, transparent 70%);
-  animation: ink-drop 3s 1s ease-out forwards;
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-/* 配置齿轮 */
-.settings-trigger {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 50;
-  background: var(--color-surface);
-  border-color: var(--color-border);
-  color: var(--color-ink-light);
-  box-shadow: var(--shadow-card);
-  transition: all 0.3s ease;
-}
-.settings-trigger:hover {
-  color: var(--color-vermilion);
-  border-color: var(--color-vermilion);
-}
-
-/* Hero 内容 */
-.hero-content {
-  text-align: center;
-  animation: fade-up 1.2s ease-out;
-  z-index: 1;
-}
-
-.hero-title {
-  font-family: var(--font-serif);
-  font-size: clamp(40px, 8vw, 80px);
+.brand-logo {
+  font-family: var(--font-display);
   font-weight: 700;
   color: var(--color-ink);
-  letter-spacing: 8px;
   margin: 0;
-  line-height: 1.2;
-}
-
-.hero-title-en {
-  display: inline-block;
-}
-
-.hero-dot {
-  color: var(--color-vermilion);
-  font-weight: 400;
-  margin: 0 4px;
-}
-
-.hero-title-cn {
-  display: inline-block;
-}
-
-/* 毛笔横扫装饰线 */
-.hero-line {
-  width: 80px;
-  height: 3px;
-  background: var(--color-vermilion);
-  margin: 20px auto;
-  border-radius: 2px;
-  animation: brush-stroke 1s 0.5s ease-out both;
-  transform-origin: left;
-}
-
-.hero-subtitle {
-  font-family: var(--font-sans);
-  font-size: clamp(14px, 2.5vw, 18px);
-  color: var(--color-ink-light);
-  letter-spacing: 4px;
-  margin: 0;
-  animation: fade-up 1.2s 0.3s ease-out both;
-}
-
-/* 向下滚动箭头 */
-.hero-scroll {
-  position: absolute;
-  bottom: 40px;
-  color: var(--color-ink-faint);
-  cursor: pointer;
-  animation: bounce-down 2s ease-in-out infinite;
-  transition: color 0.3s ease;
-  z-index: 1;
-}
-.hero-scroll:hover {
-  color: var(--color-vermilion);
-}
-
-/* ====== 创作工作台 ====== */
-.studio {
-  padding: 80px 24px;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
   display: flex;
-  justify-content: center;
+  align-items: baseline;
+  gap: 2px;
 }
 
-.studio-inner {
+.brand-en {
+  font-size: var(--text-2xl);
+}
+
+.brand-dot {
+  font-size: var(--text-xl);
+  color: var(--color-pop);
+  font-weight: 400;
+}
+
+.brand-cn {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-ink-soft);
+  letter-spacing: 2px;
+}
+
+.brand-tagline {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.settings-trigger {
+  background: var(--color-panel);
+  border-color: var(--color-border);
+  color: var(--color-muted);
+  box-shadow: var(--panel-shadow);
+  transition: all 0.25s ease;
+}
+.settings-trigger:hover {
+  color: var(--color-pop);
+  border-color: var(--color-pop);
+}
+
+/* ====== 工作区 ====== */
+.workspace {
+  flex: 1;
+  display: flex;
+  gap: 32px;
+  padding: 32px;
+  max-width: 1200px;
   width: 100%;
-  max-width: 680px;
-  animation: fade-up 0.8s ease-out;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.studio-col {
+  flex: 0 0 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 /* 区域标签 */
-.studio-label,
-.gallery-label {
+.section-label {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 40px;
-  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.studio-label-text,
-.gallery-label-text {
-  font-family: var(--font-serif);
-  font-size: 15px;
-  color: var(--color-ink-light);
-  letter-spacing: 6px;
+.section-label-text {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-muted);
+  letter-spacing: 3px;
   white-space: nowrap;
 }
 
-.studio-label-line,
-.gallery-label-line {
+.section-label-line {
   flex: 1;
-  max-width: 120px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+  background: var(--color-border);
 }
 
-/* 画布区域 */
-.canvas-area {
-  margin-bottom: 32px;
+/* 上传分镜框 */
+.upload-panel {
+  padding: 24px 20px;
+  margin-bottom: 16px;
 }
 
 /* 生成按钮 */
 .generate-btn {
   width: 100%;
-  height: 52px;
-  font-size: 18px;
-  letter-spacing: 4px;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-.generate-btn:not(:disabled):hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(194, 53, 49, 0.3);
-}
-
-/* ====== 作品展厅 ====== */
-.gallery {
-  padding: 60px 24px 80px;
+  height: 48px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(44, 44, 44, 0.02) 0%, transparent 60%),
-    var(--color-bg);
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--color-panel);
+  background: var(--color-pop);
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.generate-btn:hover:not(:disabled) {
+  background: var(--color-pop-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3);
+}
+.generate-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.generate-btn.is-loading {
+  opacity: 0.7;
+  cursor: wait;
 }
 
-.gallery-inner {
-  width: 100%;
-  max-width: 900px;
+.generate-icon {
+  width: 16px;
+  height: 16px;
 }
 
-/* ====== 页脚 ====== */
+.generate-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 结果分镜框 */
+.gallery-panel {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ====== Footer ====== */
 .app-footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 24px;
+  gap: 8px;
+  padding: 16px;
   border-top: 1px solid var(--color-border-light);
 }
 
-.seal {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 2px solid var(--color-vermilion);
-  color: var(--color-vermilion);
-  font-family: var(--font-serif);
-  font-size: 10px;
+.footer-mark {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
   font-weight: 700;
+  color: var(--color-ink);
   letter-spacing: 1px;
-  border-radius: 2px;
-  transform: rotate(-3deg);
 }
 
-.footer-text {
-  font-size: 13px;
-  color: var(--color-ink-faint);
-  letter-spacing: 1px;
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
 }
 
 /* ====== 响应式 ====== */
-@media (max-width: 768px) {
-  .hero {
-    min-height: 80vh;
+@media (max-width: 900px) {
+  .workspace {
+    flex-direction: column;
+    padding: 20px;
+    gap: 24px;
   }
 
-  .hero-ink-1 { width: 200px; height: 200px; }
-  .hero-ink-2 { width: 120px; height: 120px; }
-  .hero-ink-3 { display: none; }
+  .studio-col {
+    flex: none;
+  }
 
-  .studio { padding: 60px 16px; }
-  .gallery { padding: 40px 16px 60px; }
+  .gallery-panel {
+    min-height: 320px;
+  }
+}
 
-  .settings-trigger {
-    top: 12px;
-    right: 12px;
+@media (max-width: 768px) {
+  .app-header {
+    padding: 16px 20px;
+  }
+
+  .brand-en {
+    font-size: var(--text-xl);
+  }
+
+  .brand-cn {
+    font-size: var(--text-base);
   }
 }
 </style>

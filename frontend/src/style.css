@@ -1,36 +1,38 @@
 /* ============================
    InkIn 入画 — 全局样式
-   设计语言：水墨黑 + 宣纸白 + 朱砂红
+   设计语言：编辑漫画志（Editorial Comic）
    ============================ */
 
 :root {
   /* 色彩体系 */
-  --color-bg: #f5f0e8;           /* 宣纸米白 */
-  --color-bg-warm: #faf7f2;      /* 更暖的浅底 */
-  --color-surface: #ffffff;      /* 卡片/表面 */
-  --color-ink: #2c2c2c;          /* 墨色-主文字 */
-  --color-ink-light: #6b6b6b;    /* 淡墨-次要文字 */
-  --color-ink-faint: #9c9c9c;    /* 极淡-辅助文字 */
-  --color-vermilion: #c23531;    /* 朱砂红-主强调 */
-  --color-vermilion-hover: #a82828; /* 朱砂红-hover */
-  --color-vermilion-light: #fdf2f2; /* 浅朱砂-背景 */
-  --color-vermilion-bg: #f9e8e8;    /* 朱砂红-卡片背景 */
-  --color-border: #e8e0d4;       /* 暖灰边框 */
-  --color-border-light: #f0ebe3; /* 更淡边框 */
-  --color-shadow: rgba(44, 44, 44, 0.08); /* 暖色阴影 */
+  --color-canvas: #FAFAF7;       /* 画布底 */
+  --color-panel: #FFFFFF;        /* 面板/卡片 */
+  --color-ink: #1A1A2E;          /* 深夜蓝-主文字 */
+  --color-ink-soft: #3D3D56;     /* 柔墨-次要文字 */
+  --color-muted: #6B6B7B;        /* 淡灰-辅助文字 */
+  --color-halftone: #E8E6E1;     /* 网点灰-边框/分割 */
+  --color-pop: #FF6B35;          /* 活力橙-主强调 */
+  --color-pop-hover: #E85D2E;    /* 活力橙-hover */
+  --color-pop-light: #FFF4EF;    /* 浅橙-背景 */
+  --color-pop-bg: #FFE8DD;       /* 橙色卡片背景 */
+  --color-border: #DCD9D3;       /* 边框 */
+  --color-border-light: #EEECE8; /* 淡边框 */
 
   /* 字体 */
-  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
-  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
 
   /* 排版 */
-  --text-xs: 12px;
+  --text-xs: 11px;
   --text-sm: 13px;
   --text-base: 14px;
   --text-lg: 16px;
   --text-xl: 18px;
   --text-2xl: 24px;
   --text-3xl: 32px;
+  --text-4xl: 48px;
+  --text-hero: clamp(48px, 8vw, 80px);
 
   /* 间距 */
   --space-1: 4px;
@@ -40,15 +42,19 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
 
   /* 圆角 */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
-  /* 阴影 */
-  --shadow-card: 0 2px 12px var(--color-shadow);
-  --shadow-card-hover: 0 4px 20px rgba(44, 44, 44, 0.12);
+  /* 分镜框 */
+  --panel-border: 3px solid var(--color-ink);
+  --panel-shadow: 0 2px 12px rgba(26, 26, 46, 0.06);
+  --panel-shadow-hover: 0 4px 20px rgba(26, 26, 46, 0.1);
 }
 
 *,
@@ -66,9 +72,9 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   color: var(--color-ink);
-  background-color: var(--color-bg);
+  background-color: var(--color-canvas);
   line-height: 1.6;
 }
 
@@ -78,18 +84,18 @@ body {
 
 /* Element Plus 主题色覆盖 */
 :root {
-  --el-color-primary: #c23531;
-  --el-color-primary-light-3: #d4605c;
-  --el-color-primary-light-5: #e0908d;
-  --el-color-primary-light-7: #ecc3c2;
-  --el-color-primary-light-8: #f2d9d8;
-  --el-color-primary-light-9: #f9ecec;
-  --el-color-primary-dark-2: #a82828;
-  --el-border-radius-base: 6px;
-  --el-font-family: var(--font-sans);
+  --el-color-primary: #FF6B35;
+  --el-color-primary-light-3: #FF9060;
+  --el-color-primary-light-5: #FFB08A;
+  --el-color-primary-light-7: #FFD4BF;
+  --el-color-primary-light-8: #FFE5D6;
+  --el-color-primary-light-9: #FFF4EF;
+  --el-color-primary-dark-2: #E85D2E;
+  --el-border-radius-base: 4px;
+  --el-font-family: var(--font-body);
 }
 
-/* 全局滚动条美化 */
+/* 全局滚动条 */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -97,113 +103,122 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-halftone);
   border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
 }
 
 /* ============================
-   水墨装饰 & 动画
+   分镜框系统（Signature Element）
    ============================ */
 
-/* 墨水晕开动画 */
-@keyframes ink-spread {
-  0% { box-shadow: 0 0 0 0 rgba(44, 44, 44, 0.25); }
-  100% { box-shadow: 0 0 0 24px rgba(44, 44, 44, 0); }
+/* 基础分镜框 */
+.panel-frame {
+  border: var(--panel-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--panel-shadow);
+  background: var(--color-panel);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.panel-frame:hover {
+  box-shadow: var(--panel-shadow-hover);
 }
 
-/* 墨点飞溅 */
-@keyframes ink-drop {
-  0% { transform: scale(0); opacity: 0.6; }
-  50% { transform: scale(1.2); opacity: 0.3; }
-  100% { transform: scale(1); opacity: 0.15; }
+/* 图片分镜框 */
+.img-panel {
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+}
+.img-panel img {
+  width: 100%;
+  display: block;
 }
 
-/* 淡入上升 */
+/* 分镜框角落圆点 */
+.panel-dots {
+  position: relative;
+}
+.panel-dots::before,
+.panel-dots::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  opacity: 0.15;
+}
+.panel-dots::before {
+  top: 8px;
+  left: 8px;
+}
+.panel-dots::after {
+  bottom: 8px;
+  right: 8px;
+}
+
+/* ============================
+   Halftone 网点动画
+   ============================ */
+
+@keyframes halftone-reveal {
+  0% {
+    opacity: 0;
+    background-size: 8px 8px;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+    background-size: 6px 6px;
+  }
+}
+
+.halftone-loading {
+  position: relative;
+}
+.halftone-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
+  background-size: 6px 6px;
+  opacity: 0.08;
+  animation: halftone-reveal 2s ease-in-out infinite alternate;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ============================
+   动画
+   ============================ */
+
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 淡入 */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-/* 毛笔横扫装饰线 */
-@keyframes brush-stroke {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-/* 向下弹跳箭头 */
-@keyframes bounce-down {
+@keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(8px); }
+  50% { transform: translateY(6px); }
 }
 
-/* 画框效果 */
-.img-frame {
-  border: 6px solid var(--color-border);
-  border-radius: 2px;
-  box-shadow:
-    inset 0 0 0 1px var(--color-border-light),
-    0 4px 24px rgba(44, 44, 44, 0.12);
-  background: var(--color-surface);
-  padding: 4px;
+/* ============================
+   工具类
+   ============================ */
+
+.text-mono {
+  font-family: var(--font-mono);
 }
 
-/* 卷轴效果（上下装饰条） */
-.scroll-style {
-  position: relative;
-}
-.scroll-style::before,
-.scroll-style::after {
-  content: '';
-  display: block;
-  height: 8px;
-  background: linear-gradient(90deg, var(--color-border) 0%, var(--color-bg-warm) 50%, var(--color-border) 100%);
-  border-radius: 4px;
-  margin: 0 -8px;
-}
-
-/* 宣纸纹理叠加 */
-.paper-texture {
-  position: relative;
-}
-.paper-texture::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(ellipse at 15% 25%, rgba(0,0,0,0.02) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 75%, rgba(0,0,0,0.015) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.01) 0%, transparent 70%);
-  z-index: 0;
-}
-
-/* 墨色角标装饰 */
-.ink-corners {
-  position: relative;
-}
-.ink-corners::before,
-.ink-corners::after {
-  content: '';
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  border-color: var(--color-ink);
-  border-style: solid;
-  opacity: 0.2;
-}
-.ink-corners::before {
-  top: 8px;
-  left: 8px;
-  border-width: 2px 0 0 2px;
-}
-.ink-corners::after {
-  bottom: 8px;
-  right: 8px;
-  border-width: 0 2px 2px 0;
+.text-display {
+  font-family: var(--font-display);
 }
