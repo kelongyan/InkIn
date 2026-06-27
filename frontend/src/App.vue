@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus'
 import ImageUploader from './components/ImageUploader.vue'
 import ApiSettings from './components/ApiSettings.vue'
 import ResultViewer from './components/ResultViewer.vue'
+import { generateComic } from './utils/api.js'
 
 const uploadedFile = ref(null)
 const originalUrl = ref('')
@@ -26,7 +27,6 @@ async function handleGenerate() {
   resultUrl.value = ''
 
   try {
-    const { generateComic } = await import('./utils/api.js')
     const res = await generateComic(uploadedFile.value)
 
     if (res.success && res.data) {

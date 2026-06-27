@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { getConfig, saveConfig } from '../utils/api.js'
 
 const emit = defineEmits(['config-saved'])
 
@@ -14,7 +15,6 @@ const showKey = ref(false)
 
 onMounted(async () => {
   try {
-    const { getConfig } = await import('../utils/api.js')
     const res = await getConfig()
     if (res.success && res.data) {
       config.value = { ...config.value, ...res.data }
@@ -40,7 +40,6 @@ async function handleSave() {
 
   loading.value = true
   try {
-    const { saveConfig } = await import('../utils/api.js')
     const res = await saveConfig(config.value)
     if (res.success) {
       ElMessage.success('配置已保存')

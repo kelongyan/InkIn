@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { Loading } from '@element-plus/icons-vue'
 
 const props = defineProps({
   originalUrl: String,
@@ -22,7 +23,7 @@ function downloadImage() {
 <template>
   <div class="result-viewer">
     <div v-if="loading" class="loading-state">
-      <el-icon class="is-loading" :size="48"><i class="el-icon-loading" /></el-icon>
+      <el-icon class="is-loading" :size="48"><Loading /></el-icon>
       <p>正在生成漫画，请稍候...</p>
       <p class="tip">这可能需要 30-60 秒</p>
     </div>

@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Upload, Loading } from '@element-plus/icons-vue'
+import { uploadImage } from '../utils/api.js'
 
 const emit = defineEmits(['upload-success'])
 
@@ -40,7 +42,6 @@ function handleFile(file) {
 async function uploadFile(file) {
   uploading.value = true
   try {
-    const { uploadImage } = await import('../utils/api.js')
     const res = await uploadImage(file)
     if (res.success) {
       ElMessage.success('上传成功')
@@ -88,7 +89,7 @@ function onFileChange(e) {
       @click="$refs.fileInput.click()"
     >
       <div v-if="uploading" class="upload-loading">
-        <el-icon class="is-loading" :size="40"><i class="el-icon-loading" /></el-icon>
+        <el-icon class="is-loading" :size="40"><Loading /></el-icon>
         <p>上传中...</p>
       </div>
       <div v-else-if="previewUrl" class="preview">
@@ -96,7 +97,7 @@ function onFileChange(e) {
         <p class="hint">点击重新选择</p>
       </div>
       <div v-else class="placeholder">
-        <el-icon :size="48"><i class="el-icon-upload" /></el-icon>
+        <el-icon :size="48"><Upload /></el-icon>
         <p>拖拽图片到这里，或 <em>点击选择</em></p>
         <p class="tip">支持 JPG/PNG/GIF/WebP，最大 10MB</p>
       </div>
