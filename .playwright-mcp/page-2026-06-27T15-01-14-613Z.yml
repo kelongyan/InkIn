@@ -1,0 +1,71 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "跳到主要内容" [ref=e2] [cursor=pointer]
+      - link "无障碍功能帮助" [ref=e3] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=zh-CN
+  - generic [ref=e8]:
+    - search [ref=e9]:
+      - generic [ref=e12]:
+        - link [ref=e13] [cursor=pointer]:
+          - /url: https://www.google.com.hk/webhp?hl=zh-CN&ictx=0&sa=X&ved=0ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4QpYkNCAo
+        - generic [ref=e14]:
+          - combobox "搜索" [ref=e17]: 任务 任务
+          - generic [ref=e18]:
+            - button "清除" [ref=e20] [cursor=pointer]:
+              - img [ref=e22]
+            - generic [ref=e25]:
+              - button "按语音搜索" [ref=e26] [cursor=pointer]:
+                - img [ref=e27]
+              - button "按图搜索" [ref=e29] [cursor=pointer]:
+                - img [ref=e30]
+        - button "搜索" [ref=e32] [cursor=pointer]:
+          - img [ref=e35]
+    - generic [ref=e37]:
+      - button "设置" [ref=e39] [cursor=pointer]
+      - button "分享" [ref=e40] [cursor=pointer]:
+        - img [ref=e44]
+      - generic [ref=e46]:
+        - button "Google 应用" [ref=e48] [cursor=pointer]:
+          - img [ref=e49]
+        - link "登录" [ref=e53] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=zh-CN&passive=true&continue=https://www.google.com.hk/search%3Fq%3D%25E4%25BB%25BB%25E5%258A%25A1%26oq%3D%25E4%25BB%25BB%25E5%258A%25A1%26gs_lcrp%3DEgZjaHJvbWUyBggAEEUYOdIBBzI1NGowajSoAgCwAgA%26sourceid%3Dchrome%26ie%3DUTF-8%26sei%3Dy-U_atKQOqaZ0PEPzqXz0AQ&ec=futura_srp_og_si_72236_p
+  - generic [ref=e55]:
+    - navigation [ref=e61]:
+      - list [ref=e64]:
+        - listitem [ref=e65]:
+          - link "全部" [disabled] [ref=e66]:
+            - generic [ref=e68]: 全部
+        - listitem [ref=e69]:
+          - link "图片" [ref=e70] [cursor=pointer]:
+            - /url: /search?newwindow=1&sca_esv=650bb547ae878b5f&udm=2&fbs=ABfTbFUhNGvvPEUFOvrsPMHwBXgOm668fbRC_a7Vhb8DCgbMq5qkXH1ll5RuIouPLh5wQpv2NH08xK2bNi_ui2XCXQhO25kEIQTHeh2iU16bUTvtp96_DXUwR_8ACTWq5N12dk79lp42svMk48p_Hbw8ga441VfBGhJEXomj3GupNl7HQSyIT8I&q=%E4%BB%BB%E5%8A%A1&sa=X&ved=2ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4QtKgLegQIDRAB
+            - generic [ref=e72]: 图片
+        - listitem [ref=e73]:
+          - link "视频" [ref=e74] [cursor=pointer]:
+            - /url: /search?newwindow=1&sca_esv=650bb547ae878b5f&udm=7&fbs=ABfTbFUhNGvvPEUFOvrsPMHwBXgOm668fbRC_a7Vhb8DCgbMq5qkXH1ll5RuIouPLh5wQpv2NH08xK2bNi_ui2XCXQhO25kEIQTHeh2iU16bUTvtp96_DXUwR_8ACTWq5N12dk79lp42svMk48p_Hbw8ga441VfBGhJEXomj3GupNl7HQSyIT8I&q=%E4%BB%BB%E5%8A%A1&sa=X&ved=2ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4QtKgLegQICxAB
+            - generic [ref=e76]: 视频
+        - listitem [ref=e77]:
+          - link "新闻" [ref=e78] [cursor=pointer]:
+            - /url: /search?newwindow=1&sca_esv=650bb547ae878b5f&q=%E4%BB%BB%E5%8A%A1&tbm=nws&source=lnms&fbs=ABfTbFUhNGvvPEUFOvrsPMHwBXgOm668fbRC_a7Vhb8DCgbMq5qkXH1ll5RuIouPLh5wQpv2NH08xK2bNi_ui2XCXQhO25kEIQTHeh2iU16bUTvtp96_DXUwR_8ACTWq5N12dk79lp42svMk48p_Hbw8ga441VfBGhJEXomj3GupNl7HQSyIT8I&sa=X&ved=2ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4Q0pQJegQIGBAB
+            - generic [ref=e80]: 新闻
+        - listitem [ref=e81]:
+          - link "短视频" [ref=e82] [cursor=pointer]:
+            - /url: /search?newwindow=1&sca_esv=650bb547ae878b5f&udm=39&fbs=ABfTbFUhNGvvPEUFOvrsPMHwBXgOm668fbRC_a7Vhb8DCgbMq5qkXH1ll5RuIouPLh5wQpv2NH08xK2bNi_ui2XCXQhO25kEIQTHeh2iU16bUTvtp96_DXUwR_8ACTWq5N12dk79lp42svMk48p_Hbw8ga441VfBGhJEXomj3GupNl7HQSyIT8I&q=%E4%BB%BB%E5%8A%A1&sa=X&ved=2ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4Qs6gLegQIDBAB
+            - generic [ref=e84]: 短视频
+        - listitem [ref=e85]:
+          - link "图书" [ref=e86] [cursor=pointer]:
+            - /url: /search?newwindow=1&sca_esv=650bb547ae878b5f&q=%E4%BB%BB%E5%8A%A1&udm=36&source=lnms&fbs=ABfTbFUhNGvvPEUFOvrsPMHwBXgOm668fbRC_a7Vhb8DCgbMq5qkXH1ll5RuIouPLh5wQpv2NH08xK2bNi_ui2XCXQhO25kEIQTHeh2iU16bUTvtp96_DXUwR_8ACTWq5N12dk79lp42svMk48p_Hbw8ga441VfBGhJEXomj3GupNl7HQSyIT8I&sa=X&ved=2ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4Q0pQJegQIFxAB
+            - generic [ref=e88]: 图书
+        - listitem [ref=e89]:
+          - link "网页" [ref=e90] [cursor=pointer]:
+            - /url: /search?newwindow=1&sca_esv=650bb547ae878b5f&udm=web&fbs=ABfTbFUhNGvvPEUFOvrsPMHwBXgOm668fbRC_a7Vhb8DCgbMq5qkXH1ll5RuIouPLh5wQpv2NH08xK2bNi_ui2XCXQhO25kEIQTHeh2iU16bUTvtp96_DXUwR_8ACTWq5N12dk79lp42svMk48p_Hbw8ga441VfBGhJEXomj3GupNl7HQSyIT8I&q=%E4%BB%BB%E5%8A%A1&sa=X&ved=2ahUKEwi2_9GB2KeVAxUVODQIHWZJGr4Qs6gLegQIFBAB
+            - generic [ref=e92]: 网页
+        - listitem [ref=e93]:
+          - button "更多过滤条件" [ref=e94] [cursor=pointer]:
+            - generic "更多过滤条件" [ref=e95]:
+              - generic [ref=e96]:
+                - generic [ref=e97]: 更多
+                - img [ref=e99]
+    - heading "搜索结果" [level=1] [ref=e101]
+    - generic:
+      - main
