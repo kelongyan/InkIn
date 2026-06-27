@@ -100,3 +100,110 @@ body {
   background: var(--color-border);
   border-radius: 3px;
 }
+
+/* ============================
+   水墨装饰 & 动画
+   ============================ */
+
+/* 墨水晕开动画 */
+@keyframes ink-spread {
+  0% { box-shadow: 0 0 0 0 rgba(44, 44, 44, 0.25); }
+  100% { box-shadow: 0 0 0 24px rgba(44, 44, 44, 0); }
+}
+
+/* 墨点飞溅 */
+@keyframes ink-drop {
+  0% { transform: scale(0); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0.15; }
+}
+
+/* 淡入上升 */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 淡入 */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 毛笔横扫装饰线 */
+@keyframes brush-stroke {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* 向下弹跳箭头 */
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* 画框效果 */
+.img-frame {
+  border: 6px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-light),
+    0 4px 24px rgba(44, 44, 44, 0.12);
+  background: var(--color-surface);
+  padding: 4px;
+}
+
+/* 卷轴效果（上下装饰条） */
+.scroll-style {
+  position: relative;
+}
+.scroll-style::before,
+.scroll-style::after {
+  content: '';
+  display: block;
+  height: 8px;
+  background: linear-gradient(90deg, var(--color-border) 0%, var(--color-bg-warm) 50%, var(--color-border) 100%);
+  border-radius: 4px;
+  margin: 0 -8px;
+}
+
+/* 宣纸纹理叠加 */
+.paper-texture {
+  position: relative;
+}
+.paper-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 15% 25%, rgba(0,0,0,0.02) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 75%, rgba(0,0,0,0.015) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.01) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* 墨色角标装饰 */
+.ink-corners {
+  position: relative;
+}
+.ink-corners::before,
+.ink-corners::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--color-ink);
+  border-style: solid;
+  opacity: 0.2;
+}
+.ink-corners::before {
+  top: 8px;
+  left: 8px;
+  border-width: 2px 0 0 2px;
+}
+.ink-corners::after {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 2px 2px 0;
+}

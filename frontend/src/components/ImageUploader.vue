@@ -82,32 +82,48 @@ function onFileChange(e) {
 <template>
   <div class="image-uploader">
     <div
-      class="drop-zone"
+      class="canvas-wrap"
       :class="{ dragging: isDragging, 'has-image': previewUrl }"
       @drop="onDrop"
       @dragover="onDragOver"
       @dragleave="onDragLeave"
       @click="$refs.fileInput.click()"
     >
+      <!-- 四角装饰 -->
+      <span class="corner corner-tl"></span>
+      <span class="corner corner-tr"></span>
+      <span class="corner corner-bl"></span>
+      <span class="corner corner-br"></span>
+
       <!-- 上传中 -->
-      <div v-if="uploading" class="upload-loading">
+      <div v-if="uploading" class="state uploading">
         <el-icon class="is-loading" :size="40"><Loading /></el-icon>
-        <p>上传中...</p>
+        <p>墨水渲染中...</p>
       </div>
 
-      <!-- 已有预览 -->
-      <div v-else-if="previewUrl" class="preview">
-        <img :src="previewUrl" alt="预览" />
-        <p class="hint">点击重新选择</p>
-      </div>
-
-      <!-- 空状态占位 -->
-      <div v-else class="placeholder">
-        <div class="placeholder-icon">
-          <el-icon :size="48"><Upload /></el-icon>
+      <!-- 已有预览 — 画卷卷轴样式 -->
+      <div v-else-if="previewUrl" class="scroll-preview">
+        <div class="scroll-rod scroll-rod-top"></div>
+        <div class="scroll-body">
+          <img :src="previewUrl" alt="预览" />
         </div>
-        <p class="placeholder-text">拖拽图片到这里，或 <em>点击选择</em></p>
-        <p class="placeholder-tip">支持 JPG / PNG / GIF / WebP，最大 10MB</p>
+        <div class="scroll-rod scroll-rod-bottom"></div>
+        <p class="reselect-hint">点击重新选择</p>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-else class="state empty">
+        <div class="brush-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M48 8L20 36l-4 16 16-4L60 20 48 8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M20 36l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 56h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="52" cy="12" r="3" fill="currentColor" opacity="0.3"/>
+          </svg>
+        </div>
+        <p class="empty-title">将照片放上画布</p>
+        <p class="empty-sub">拖拽图片到这里，或 <em>点击选择</em></p>
+        <p class="empty-tip">JPG / PNG / GIF / WebP &middot; 最大 10MB</p>
       </div>
     </div>
 
@@ -126,85 +142,158 @@ function onFileChange(e) {
   width: 100%;
 }
 
-.drop-zone {
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 48px var(--space-5);
+/* ====== 画布外壳 ====== */
+.canvas-wrap {
+  position: relative;
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  padding: 48px 24px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: var(--color-bg-warm);
+  transition: all 0.4s ease;
+  background: var(--color-bg-warm);
+  overflow: hidden;
 }
 
-.drop-zone:hover {
+.canvas-wrap:hover {
   border-color: var(--color-vermilion);
-  background-color: var(--color-vermilion-light);
+  background: var(--color-vermilion-light);
 }
 
-.drop-zone.dragging {
+.canvas-wrap.dragging {
   border-color: var(--color-vermilion);
+  border-width: 3px;
+  background: var(--color-vermilion-light);
+  animation: ink-spread 0.6s ease-out;
+}
+
+.canvas-wrap.has-image {
+  padding: 24px;
+  background: var(--color-surface);
+}
+
+/* ====== 四角装饰 ====== */
+.corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--color-ink);
   border-style: solid;
-  background-color: var(--color-vermilion-light);
-  transform: scale(1.01);
+  opacity: 0.12;
+  transition: opacity 0.3s ease;
+}
+.canvas-wrap:hover .corner {
+  opacity: 0.3;
+  border-color: var(--color-vermilion);
+}
+.corner-tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
+.corner-tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
+.corner-bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; }
+.corner-br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+
+/* ====== 通用状态 ====== */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.drop-zone.has-image {
-  padding: var(--space-5);
-}
-
-/* 空状态 */
-.placeholder-icon {
+/* ====== 空状态 ====== */
+.brush-icon {
+  width: 56px;
+  height: 56px;
   color: var(--color-ink-faint);
-  margin-bottom: var(--space-3);
+  margin-bottom: 8px;
   transition: color 0.3s ease;
 }
-
-.drop-zone:hover .placeholder-icon {
+.canvas-wrap:hover .brush-icon {
   color: var(--color-vermilion);
 }
-
-.placeholder-text {
-  color: var(--color-ink-light);
-  font-size: var(--text-base);
-  margin-bottom: var(--space-2);
+.brush-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
-.placeholder-text em {
+.empty-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--color-ink);
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.empty-sub {
+  color: var(--color-ink-light);
+  font-size: 14px;
+}
+.empty-sub em {
   color: var(--color-vermilion);
   font-style: normal;
   font-weight: 500;
+  border-bottom: 1px dashed var(--color-vermilion);
+  padding-bottom: 1px;
 }
 
-.placeholder-tip {
-  font-size: var(--text-xs);
+.empty-tip {
+  font-size: 12px;
   color: var(--color-ink-faint);
+  margin-top: 4px;
 }
 
-/* 预览图 */
-.preview img {
-  max-width: 100%;
-  max-height: 300px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-card);
-}
-
-.preview .hint {
-  font-size: var(--text-xs);
-  color: var(--color-ink-faint);
-  margin-top: var(--space-2);
-}
-
-/* 上传加载 */
-.upload-loading {
+/* ====== 上传中 ====== */
+.uploading {
   color: var(--color-vermilion);
+  padding: 32px 0;
+}
+.uploading p {
+  font-size: 14px;
+  color: var(--color-ink-light);
 }
 
-.upload-loading p {
-  margin-top: var(--space-2);
-  font-size: var(--text-sm);
+/* ====== 卷轴预览 ====== */
+.scroll-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
-/* 隐藏文件 input */
+.scroll-rod {
+  width: calc(100% + 32px);
+  height: 10px;
+  background: linear-gradient(
+    180deg,
+    var(--color-border) 0%,
+    var(--color-bg-warm) 40%,
+    var(--color-border) 100%
+  );
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+.scroll-body {
+  width: 100%;
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.scroll-body img {
+  max-width: 100%;
+  max-height: 360px;
+  border-radius: 4px;
+  box-shadow: 0 2px 16px rgba(44, 44, 44, 0.1);
+}
+
+.reselect-hint {
+  font-size: 12px;
+  color: var(--color-ink-faint);
+  margin-top: 12px;
+}
+
+/* ====== 隐藏 input ====== */
 .file-input {
   display: none;
 }
