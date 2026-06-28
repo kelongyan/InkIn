@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getConfig, saveConfig } from '../utils/api.js'
 
@@ -55,7 +55,7 @@ async function handleSave() {
   try {
     const res = await saveConfig(config.value)
     if (res.success) {
-      ElMessage.success('配置已保存')
+      ElMessage.success('器材箱已保存')
       emit('config-saved', res.data)
     } else {
       ElMessage.error(res.error || '保存失败')
@@ -70,7 +70,13 @@ async function handleSave() {
 
 <template>
   <div class="api-settings">
-    <el-form label-position="top" size="default">
+    <section class="settings-intro">
+      <p>Provider Setup</p>
+      <h2>接上你的画笔</h2>
+      <span>支持 OpenAI 兼容接口，配置只保存在本地后端。</span>
+    </section>
+
+    <el-form label-position="top" size="large" class="settings-form">
       <el-form-item>
         <template #label>
           <span class="label-text">API Key</span>
@@ -79,6 +85,7 @@ async function handleSave() {
           v-model="config.api_key"
           :type="showKey ? 'text' : 'password'"
           placeholder="sk-..."
+          autocomplete="off"
         >
           <template #append>
             <el-button @click="showKey = !showKey">
@@ -86,7 +93,7 @@ async function handleSave() {
             </el-button>
           </template>
         </el-input>
-        <p class="field-hint">在对应平台的控制台获取</p>
+        <p class="field-hint">从模型服务商控制台复制密钥。</p>
       </el-form-item>
 
       <el-form-item>
@@ -97,7 +104,7 @@ async function handleSave() {
           v-model="config.base_url"
           placeholder="https://api.openai.com/v1"
         />
-        <p class="field-hint">API 接口地址，需兼容 OpenAI 格式</p>
+        <p class="field-hint">需要兼容 OpenAI Chat Completions 或 Images 接口。</p>
       </el-form-item>
 
       <el-form-item>
@@ -108,7 +115,7 @@ async function handleSave() {
           v-model="config.model"
           placeholder="gpt-4o"
         />
-        <p class="field-hint">模型名称，如 gpt-4o、qwen-vl-max</p>
+        <p class="field-hint">例如 gpt-4o、gpt-image-1、qwen-vl-max。</p>
       </el-form-item>
 
       <el-form-item class="save-item">
@@ -118,7 +125,7 @@ async function handleSave() {
           class="save-btn"
           @click="handleSave"
         >
-          保存配置
+          保存器材箱
         </el-button>
       </el-form-item>
     </el-form>
@@ -130,33 +137,85 @@ async function handleSave() {
   width: 100%;
 }
 
+.settings-intro {
+  margin-bottom: 26px;
+  padding: 18px;
+  border: 1px solid rgba(64, 43, 28, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 250, 240, 0.58);
+}
+
+.settings-intro p {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.settings-intro h2 {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+.settings-intro span {
+  display: block;
+  margin-top: 10px;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+}
+
+.settings-form {
+  display: grid;
+  gap: 8px;
+}
+
 .label-text {
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--color-ink-soft);
-  letter-spacing: 1px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .field-hint {
-  font-size: var(--text-xs);
+  margin-top: 6px;
   color: var(--color-muted);
-  margin-top: 4px;
-  line-height: 1.4;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .save-item {
+  margin-top: 6px;
   margin-bottom: 0;
 }
 
 .save-btn {
   width: 100%;
-  height: 40px;
+  height: 46px;
+  border-radius: 999px;
   font-family: var(--font-display);
-  font-size: var(--text-base);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  border-radius: var(--radius-xs);
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+:deep(.el-input__wrapper),
+:deep(.el-input-group__append) {
+  border-radius: 14px;
+  background: rgba(255, 250, 240, 0.78);
+  box-shadow: 0 0 0 1px rgba(64, 43, 28, 0.16) inset;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-vermilion) inset;
+}
+
+:deep(.el-input__inner) {
+  color: var(--color-ink);
 }
 </style>
