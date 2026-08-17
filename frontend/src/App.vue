@@ -1,21 +1,38 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Setting } from '@element-plus/icons-vue'
 import ImageUploader from './components/ImageUploader.vue'
 import ApiSettings from './components/ApiSettings.vue'
 import ResultViewer from './components/ResultViewer.vue'
-import { generateComic } from './utils/api.js'
+import StylePicker from './components/StylePicker.vue'
+import { generateComic, getStyles } from './utils/api.js'
 
 const uploadedFile = ref(null)
 const resultUrl = ref('')
 const generating = ref(false)
 const uploading = ref(false)
 const drawerVisible = ref(false)
+const styleList = ref([])
+const selectedStyle = ref('comic')
+const stylePickerRef = ref(null)
+const rationale = ref('')
+const credit = ref('')
 
 const canGenerate = computed(() => uploadedFile.value && !generating.value && !uploading.value)
 const showPreviewStage = computed(() => generating.value || Boolean(resultUrl.value))
 const workbenchHasPreview = computed(() => showPreviewStage.value)
+
+onMounted(async () => {
+  try {
+    const res = await getStyles()
+    if (res.success && res.data) {
+      styleList.value = res.data
+    }
+  } catch (err) {
+    console.error('加载风格列表失败:', err)
+  }
+})
 
 function onUploadStart() {
   uploading.value = true
@@ -24,6 +41,8 @@ function onUploadStart() {
 function onUploadSuccess(data) {
   uploadedFile.value = data.filename
   resultUrl.value = ''
+  rationale.value = ''
+  credit.value = ''
   uploading.value = false
 }
 
@@ -39,13 +58,18 @@ async function handleGenerate() {
 
   generating.value = true
   resultUrl.value = ''
+  rationale.value = ''
+  credit.value = ''
 
   try {
-    const res = await generateComic(uploadedFile.value)
+    const params = stylePickerRef.value?.collectParams() || {}
+    const res = await generateComic(uploadedFile.value, selectedStyle.value, params)
 
     if (res.success && res.data) {
       if (res.data.image_url) {
         resultUrl.value = res.data.image_url
+        rationale.value = res.data.rationale || ''
+        credit.value = res.data.credit || ''
         ElMessage.success('入画完成')
       } else if (res.data.content) {
         ElMessage.info('模型返回了文字描述，请检查模型是否支持图片生成')
@@ -114,6 +138,13 @@ async function handleGenerate() {
               @upload-error="onUploadError"
             />
 
+            <StylePicker
+              ref="stylePickerRef"
+              v-model="selectedStyle"
+              :styles="styleList"
+              class="style-zone"
+            />
+
             <button
               class="generate-btn ink-button"
               :class="{ 'is-loading': generating }"
@@ -132,6 +163,8 @@ async function handleGenerate() {
               <ResultViewer
                 :result-url="resultUrl"
                 :loading="generating"
+                :rationale="rationale"
+                :credit="credit"
               />
             </div>
           </Transition>
@@ -387,6 +420,10 @@ async function handleGenerate() {
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.08em;
+}
+
+.style-zone {
+  margin-top: 14px;
 }
 
 .generate-btn.is-loading {

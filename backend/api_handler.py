@@ -37,14 +37,22 @@ def is_image_generation_model(model):
     return any(m in model_lower for m in IMAGE_GENERATION_MODELS)
 
 
-def generate_with_image_api(image_path, config, style_prompt):
+def generate_with_image_api(image_path, config, style_prompt, size=(1024, 1024)):
     """
     使用图像生成 API（/v1/images/generations）生成图片
     适用于 gpt-image-2、dall-e-3 等模型
+
+    Args:
+        image_path: 图片文件路径
+        config: API 配置
+        style_prompt: 生成提示词
+        size: (width, height) 输出尺寸，部分平台不支持非 1024 尺寸时自动回退
     """
     api_key = config.get('api_key', '')
     base_url = config.get('base_url', '').rstrip('/')
     model = config.get('model', '')
+
+    size_str = f'{size[0]}x{size[1]}'
 
     headers = {
         'Authorization': f'Bearer {api_key}',
@@ -63,7 +71,7 @@ def generate_with_image_api(image_path, config, style_prompt):
                 'model': model,
                 'prompt': style_prompt,
                 'n': '1',
-                'size': '1024x1024',
+                'size': size_str,
             }
             response = requests.post(url, headers=headers, files=files, data=data, timeout=180)
 
@@ -74,9 +82,22 @@ def generate_with_image_api(image_path, config, style_prompt):
                 'model': model,
                 'prompt': style_prompt,
                 'n': 1,
-                'size': '1024x1024',
+                'size': size_str,
             }
             url = f'{base_url}/images/generations'
+            response = requests.post(url, headers=headers, json=payload, timeout=180)
+
+        # 部分平台不支持自定义尺寸（如仅 1024x1024），回退重试一次
+        if response.status_code in (400, 422) and size_str != '1024x1024':
+            if '/images/edits' in url:
+                url = f'{base_url}/images/generations'
+            headers['Content-Type'] = 'application/json'
+            payload = {
+                'model': model,
+                'prompt': style_prompt,
+                'n': 1,
+                'size': '1024x1024',
+            }
             response = requests.post(url, headers=headers, json=payload, timeout=180)
 
         response.raise_for_status()
@@ -110,10 +131,15 @@ def generate_with_image_api(image_path, config, style_prompt):
         return {'success': False, 'error': f'请求失败: {str(e)}'}
 
 
-def generate_with_chat_api(image_path, config):
+def generate_with_chat_api(image_path, config, prompt=None):
     """
     使用 Chat Completions API（/v1/chat/completions）生成图片
     适用于支持 vision 的模型（如 gpt-4o、qwen-vl 等）
+
+    Args:
+        image_path: 图片文件路径
+        config: API 配置
+        prompt: 生成提示词；缺省使用经典卡通漫画提示词（保持旧行为）
     """
     api_key = config.get('api_key', '')
     base_url = config.get('base_url', '').rstrip('/')
@@ -122,6 +148,9 @@ def generate_with_chat_api(image_path, config):
     # 编码图片
     base64_image = encode_image_to_base64(image_path)
     mime_type = get_image_mime_type(image_path)
+
+    if not prompt:
+        prompt = '请将这张照片转换为卡通漫画风格，保持主要特征和构图，使用鲜艳的色彩和清晰的线条。直接输出图片，不要文字描述。'
 
     headers = {
         'Authorization': f'Bearer {api_key}',
@@ -136,7 +165,7 @@ def generate_with_chat_api(image_path, config):
                 'content': [
                     {
                         'type': 'text',
-                        'text': '请将这张照片转换为卡通漫画风格，保持主要特征和构图，使用鲜艳的色彩和清晰的线条。直接输出图片，不要文字描述。'
+                        'text': prompt
                     },
                     {
                         'type': 'image_url',

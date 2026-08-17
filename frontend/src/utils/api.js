@@ -27,8 +27,14 @@ export async function uploadImage(file) {
   return res.data
 }
 
-// 生成漫画
-export async function generateComic(filename) {
-  const res = await api.post('/generate', { filename })
+// 获取创作风格列表
+export async function getStyles() {
+  const res = await api.get('/styles')
+  return res.data
+}
+
+// 生成作品（style 缺省 'comic' 保持旧行为；params 为风格参数）
+export async function generateComic(filename, style = 'comic', params = {}) {
+  const res = await api.post('/generate', { filename, style, params })
   return res.data
 }

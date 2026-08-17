@@ -2,6 +2,8 @@
 const props = defineProps({
   resultUrl: String,
   loading: Boolean,
+  rationale: String,
+  credit: String,
 })
 
 function downloadImage() {
@@ -9,7 +11,7 @@ function downloadImage() {
 
   const link = document.createElement('a')
   link.href = props.resultUrl
-  link.download = 'inkin-comic.png'
+  link.download = 'inkin-art.png'
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -46,15 +48,24 @@ function downloadImage() {
     </div>
 
     <Transition name="action-in">
-      <button
-        v-if="resultUrl && !loading"
-        class="download-btn"
-        type="button"
-        @click="downloadImage"
-      >
-        <span aria-hidden="true">↓</span>
-        下载作品
-      </button>
+      <div v-if="resultUrl && !loading" class="result-actions">
+        <button
+          class="download-btn"
+          type="button"
+          @click="downloadImage"
+        >
+          <span aria-hidden="true">↓</span>
+          下载作品
+        </button>
+      </div>
+    </Transition>
+
+    <Transition name="action-in">
+      <div v-if="rationale && !loading" class="rationale-card">
+        <p class="rationale-eyebrow">创作思路</p>
+        <p class="rationale-text">{{ rationale }}</p>
+        <p v-if="credit" class="rationale-credit">{{ credit }}</p>
+      </div>
     </Transition>
   </div>
 </template>
@@ -262,6 +273,41 @@ function downloadImage() {
   color: var(--color-vermilion);
   font-size: 18px;
   line-height: 1;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rationale-card {
+  padding: 14px 18px;
+  border: 1px solid rgba(64, 43, 28, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 250, 240, 0.72);
+}
+
+.rationale-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.rationale-text {
+  margin-top: 6px;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.rationale-credit {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
 }
 
 .art-reveal-enter-active {

@@ -5,6 +5,8 @@ from flask_cors import CORS
 
 from config_manager import get_config, save_config
 from api_handler import generate_comic
+from styles import get_styles
+from zine_engine import zine_generate
 
 app = Flask(__name__)
 CORS(app)
@@ -97,9 +99,21 @@ def serve_upload(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
+@app.route('/api/styles', methods=['GET'])
+def get_styles_route():
+    """获取内置创作风格列表"""
+    return jsonify({'success': True, 'data': get_styles()})
+
+
 @app.route('/api/generate', methods=['POST'])
 def generate():
-    """生成漫画"""
+    """生成作品
+
+    请求体:
+        filename: 图片文件名
+        style: 风格 id（缺省 'comic'，保持旧行为）
+        params: 风格参数 dict（画幅、文字、模式开关等）
+    """
     data = request.get_json()
     if not data or 'filename' not in data:
         return jsonify({'success': False, 'error': '缺少图片文件名'}), 400
@@ -115,8 +129,14 @@ def generate():
     if not config.get('api_key'):
         return jsonify({'success': False, 'error': '请先配置 API Key'}), 400
 
-    # 调用 API 生成漫画
-    result = generate_comic(filepath, config)
+    style_id = data.get('style') or 'comic'
+    params = data.get('params') or {}
+
+    # 旧「卡通漫画」风格保持原有调用路径
+    if style_id == 'comic':
+        result = generate_comic(filepath, config)
+    else:
+        result = zine_generate(filepath, config, style_id, params)
 
     if result['success']:
         return jsonify({'success': True, 'data': result})
