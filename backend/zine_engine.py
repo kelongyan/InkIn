@@ -1,8 +1,7 @@
 """拾景引擎：分析 → 编译 → 生成的编排层
 
-拾景（Gathered Scenes）是 InkIn 内化的创作方法学（参考 Zeejay0 的
-Gathered Scenes Zine Skills）：先为照片建立场景卡片，再按所选风格
-编译定制提示词，最后调用图像生成 API。
+拾景（Gathered Scenes）是 InkIn 的创作方法学：先为照片建立场景卡片，
+再按所选风格编译定制提示词，最后调用图像生成 API。
 
 旧「卡通漫画」风格不经过本引擎，保持原有调用路径不变。
 """
@@ -12,7 +11,7 @@ from api_handler import (
     generate_with_image_api,
     is_image_generation_model,
 )
-from prompt_compiler import build_prompt, CREDIT
+from prompt_compiler import build_prompt
 from scene_analyzer import analyze_scene, BLIND_CARD
 from styles import STYLES, resolve_size, ratio_text
 
@@ -152,5 +151,4 @@ def zine_generate(image_path, config, style_id, params=None):
         'name': style['name'],
         'tagline': style['tagline'],
     }
-    result['credit'] = CREDIT
     return result

@@ -1,6 +1,6 @@
 """提示词编译器：把场景卡片 + 用户参数编译为最终生成提示词
 
-方法学参考 Gathered Scenes Zine Skills（作者 Zeejay0）的 Prompt Shape：
+拾景各管线的提示词结构：
 - 实景拼贴：四段式（画布与注意力几何 / 场景保真 / 插画场·色彩结构·撕纸边·微文字 / 质感与禁止）
 - 影像蒸馏：五段式（表达 / 画布 / 蒸馏主体 / 边缘·色彩·文字 / 质感与禁止）+ 照片禁止句
 - 电影海报：照片锁定 + 布局原型 + 字体层级 + 虚构信息规则
@@ -9,8 +9,6 @@
 """
 
 from styles import ratio_text
-
-CREDIT = "方法学参考：拾景纸刊 Gathered Scenes（Zeejay0）"
 
 
 def _cv(card, key):

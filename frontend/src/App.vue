@@ -17,7 +17,6 @@ const styleList = ref([])
 const selectedStyle = ref('comic')
 const stylePickerRef = ref(null)
 const rationale = ref('')
-const credit = ref('')
 
 const canGenerate = computed(() => uploadedFile.value && !generating.value && !uploading.value)
 const showPreviewStage = computed(() => generating.value || Boolean(resultUrl.value))
@@ -42,7 +41,6 @@ function onUploadSuccess(data) {
   uploadedFile.value = data.filename
   resultUrl.value = ''
   rationale.value = ''
-  credit.value = ''
   uploading.value = false
 }
 
@@ -59,7 +57,6 @@ async function handleGenerate() {
   generating.value = true
   resultUrl.value = ''
   rationale.value = ''
-  credit.value = ''
 
   try {
     const params = stylePickerRef.value?.collectParams() || {}
@@ -69,7 +66,6 @@ async function handleGenerate() {
       if (res.data.image_url) {
         resultUrl.value = res.data.image_url
         rationale.value = res.data.rationale || ''
-        credit.value = res.data.credit || ''
         ElMessage.success('入画完成')
       } else if (res.data.content) {
         ElMessage.info('模型返回了文字描述，请检查模型是否支持图片生成')
@@ -164,7 +160,6 @@ async function handleGenerate() {
                 :result-url="resultUrl"
                 :loading="generating"
                 :rationale="rationale"
-                :credit="credit"
               />
             </div>
           </Transition>
