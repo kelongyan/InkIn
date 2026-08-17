@@ -106,7 +106,7 @@ Write-Host "  ╔═════════════════════
 Write-Host "  ║        ✅ InkIn 启动成功！            ║" -ForegroundColor Green
 Write-Host "  ╠═══════════════════════════════════════╣" -ForegroundColor Green
 Write-Host "  ║  后端: http://localhost:5000          ║" -ForegroundColor Green
-Write-Host "  ║  前端: http://localhost:3000          ║" -ForegroundColor Green
+Write-Host "  ║  前端: http://localhost:9527          ║" -ForegroundColor Green
 Write-Host "  ╠═══════════════════════════════════════╣" -ForegroundColor Green
 Write-Host "  ║  关闭终端不会影响运行                 ║" -ForegroundColor Green
 Write-Host "  ║  停止服务: .\stop.ps1                 ║" -ForegroundColor Green
@@ -115,4 +115,4 @@ Write-Host ""
 
 # 打开浏览器
 Start-Sleep -Seconds 2
-Start-Process "http://localhost:3000"
+Start-Process "http://localhost:9527"

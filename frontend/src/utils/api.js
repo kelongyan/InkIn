@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 120000,
+  timeout: 200000,  // 200 秒，匹配后端最长超时时间（180s）+ 缓冲
 })
 
 // 获取配置

@@ -3,6 +3,8 @@ import os
 import re
 import requests
 
+from app_config import config
+
 
 # 图像生成模型列表（使用 /v1/images/generations 端点）
 IMAGE_GENERATION_MODELS = {
@@ -73,7 +75,7 @@ def generate_with_image_api(image_path, config, style_prompt, size=(1024, 1024))
                 'n': '1',
                 'size': size_str,
             }
-            response = requests.post(url, headers=headers, files=files, data=data, timeout=180)
+            response = requests.post(url, headers=headers, files=files, data=data, timeout=config.API_TIMEOUT_LONG)
 
         # 如果 edits 端点不可用，回退到 generations 端点
         if response.status_code in (404, 405):
@@ -85,7 +87,7 @@ def generate_with_image_api(image_path, config, style_prompt, size=(1024, 1024))
                 'size': size_str,
             }
             url = f'{base_url}/images/generations'
-            response = requests.post(url, headers=headers, json=payload, timeout=180)
+            response = requests.post(url, headers=headers, json=payload, timeout=config.API_TIMEOUT_LONG)
 
         # 部分平台不支持自定义尺寸（如仅 1024x1024），回退重试一次
         if response.status_code in (400, 422) and size_str != '1024x1024':
@@ -98,7 +100,7 @@ def generate_with_image_api(image_path, config, style_prompt, size=(1024, 1024))
                 'n': 1,
                 'size': '1024x1024',
             }
-            response = requests.post(url, headers=headers, json=payload, timeout=180)
+            response = requests.post(url, headers=headers, json=payload, timeout=config.API_TIMEOUT_LONG)
 
         response.raise_for_status()
         result = response.json()
@@ -181,7 +183,7 @@ def generate_with_chat_api(image_path, config, prompt=None):
 
     try:
         url = f'{base_url}/chat/completions'
-        response = requests.post(url, headers=headers, json=payload, timeout=120)
+        response = requests.post(url, headers=headers, json=payload, timeout=config.API_TIMEOUT_MEDIUM)
         response.raise_for_status()
 
         result = response.json()

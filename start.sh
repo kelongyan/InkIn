@@ -80,7 +80,7 @@ echo "  ╔═══════════════════════
 echo "  ║        ✅ InkIn 启动成功！            ║"
 echo "  ╠═══════════════════════════════════════╣"
 echo "  ║  后端: http://localhost:5000          ║"
-echo "  ║  前端: http://localhost:3000          ║"
+echo "  ║  前端: http://localhost:9527          ║"
 echo "  ╠═══════════════════════════════════════╣"
 echo "  ║  关闭终端不会影响运行                 ║"
 echo "  ║  停止服务: ./stop.sh                  ║"
@@ -89,7 +89,7 @@ echo ""
 
 # 尝试打开浏览器
 if command -v open &> /dev/null; then
-    open http://localhost:3000
+    open http://localhost:9527
 elif command -v xdg-open &> /dev/null; then
-    xdg-open http://localhost:3000
+    xdg-open http://localhost:9527
 fi

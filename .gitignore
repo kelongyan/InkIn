@@ -28,5 +28,6 @@ Thumbs.db
 backend/uploads/*
 !backend/uploads/.gitkeep
 backend/config.json
+backend/.env
 *.log
 .run/

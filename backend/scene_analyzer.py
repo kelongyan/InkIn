@@ -8,11 +8,17 @@
 """
 
 import json
+import logging
 import re
 
 import requests
 
 from api_handler import encode_image_to_base64, get_image_mime_type
+from app_config import config
+
+# 配置日志
+logging.basicConfig(level=getattr(logging, config.LOG_LEVEL))
+logger = logging.getLogger(__name__)
 
 ANALYSIS_PROMPT = """阅读这张照片，仅输出一个 JSON 对象，不要输出其他任何文字。字段如下：
 {
@@ -111,15 +117,15 @@ def analyze_scene(image_path, config):
                     ],
                 }
             ],
-            'max_tokens': 1500,
-            'temperature': 0.3,
+            'max_tokens': config.SCENE_ANALYSIS_MAX_TOKENS,
+            'temperature': config.SCENE_ANALYSIS_TEMPERATURE,
         }
 
         response = requests.post(
             f'{base_url}/chat/completions',
             headers=headers,
             json=payload,
-            timeout=90,
+            timeout=config.API_TIMEOUT_SHORT,
         )
         response.raise_for_status()
 
@@ -132,7 +138,21 @@ def analyze_scene(image_path, config):
         known = set(BLIND_CARD.keys())
         cleaned = {k: str(v).strip() for k, v in card.items() if k in known and str(v).strip()}
         if not cleaned:
+            logger.warning('场景分析返回空卡片')
             return None
         return cleaned
-    except Exception:
+    except requests.exceptions.Timeout:
+        logger.error('场景分析超时')
+        return None
+    except requests.exceptions.HTTPError as e:
+        logger.error(f'场景分析 HTTP 错误: {e.response.status_code} - {str(e)}')
+        return None
+    except json.JSONDecodeError as e:
+        logger.error(f'场景分析 JSON 解析失败: {str(e)}')
+        return None
+    except KeyError as e:
+        logger.error(f'场景分析响应缺少字段: {str(e)}')
+        return None
+    except Exception as e:
+        logger.error(f'场景分析未知错误: {type(e).__name__} - {str(e)}')
         return None

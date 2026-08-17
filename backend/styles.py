@@ -191,19 +191,6 @@ STYLE_LIST = [
                 "default": "",
                 "hint": "留空则由引擎按场景拟题",
             },
-            {
-                "key": "ratio",
-                "label": "画幅",
-                "type": "select",
-                "options": [
-                    {"value": "auto", "label": "跟随原图"},
-                    {"value": "3:4", "label": "3:4 竖版（默认人像）"},
-                    {"value": "5:3", "label": "5:3 横版"},
-                    {"value": "1:1", "label": "1:1 方形"},
-                ],
-                "default": "auto",
-                "hint": "人像默认 3:4，横图保持原方向",
-            },
         ],
     },
 ]
